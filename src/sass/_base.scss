@@ -1,0 +1,43 @@
+//Amanda
+//farver
+$primary: #03a696;
+$primary-dark: #027364;
+$secondary: #f25922;
+$light: #f0f0f0;
+$dark: #591404;
+
+// Responsivitet
+$mobile: 1px;
+$tablet: 500px;
+$desktop: 1000px;
+
+//fonte
+$header-font: "RobotoSlab-Bold";
+$subHeader-font: "Roboto-Bold";
+$regular-font: "Roboto-regular";
+
+@mixin fonts($family, $size, $color, $desktop-size) {
+  font-family: $family;
+  font-size: $size;
+  color: $color;
+  @media (min-width: $tablet) {
+    font-size: $desktop-size;
+  }
+}
+
+h1 {
+  @include fonts($header-font, 2rem, $secondary, 3rem);
+}
+h2 {
+  @include fonts($subHeader-font, 1.5rem, $primary, 2rem);
+}
+h3 {
+  @include fonts($subHeader-font, 1.25rem, $dark, 1.5rem);
+}
+p {
+  @include fonts($regular-font, 1rem, $dark, 1.25rem);
+
+  &.bold {
+    font-family: $subHeader-font;
+  }
+}

@@ -1,0 +1,31 @@
+//Amanda Madsen
+@use "sass/_base" as *;
+@use "sass/_components" as *;
+
+* {
+  background-color: white;
+  max-width: 100%;
+  margin: 0;
+}
+body {
+  overflow-x: hidden;
+  padding: 1rem;
+}
+//fonte
+@mixin font-family($family, $url) {
+  font-family: $family;
+  src: url($url);
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  @include font-family(Roboto-Regular, "assets/fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  @include font-family(Roboto-Bold, "assets/fonts/Roboto-Bold.ttf");
+}
+@font-face {
+  @include font-family(RobotoSlab-Bold, "assets/fonts/RobotoSlab-Bold.ttf");
+}
+
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
