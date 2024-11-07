@@ -34,6 +34,7 @@ h2 {
 h3 {
   @include fonts($subHeader-font, 1.25rem, $dark, 1.5rem);
 }
+
 p {
   @include fonts($regular-font, 1rem, $dark, 1.25rem);
 

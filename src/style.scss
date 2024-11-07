@@ -1,10 +1,12 @@
 //Amanda Madsen
 @use "sass/_base" as *;
 @use "sass/_components" as *;
+@use "sass/_responsive" as *;
 
 * {
   background-color: white;
   max-width: 100%;
+  height: 100%;
   margin: 0;
 }
 body {
@@ -27,5 +29,3 @@ body {
 @font-face {
   @include font-family(RobotoSlab-Bold, "assets/fonts/RobotoSlab-Bold.ttf");
 }
-
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
