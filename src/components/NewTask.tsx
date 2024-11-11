@@ -10,7 +10,7 @@ interface NewTaskProps {
     repeatTask: string,
     remind: string
   ) => void;
-  addCategory: (CategoryName: string) => void;
+  addNewCategory: (CategoryName: string) => void;
   categories: string[];
 }
 
@@ -22,6 +22,11 @@ const NewTask = ({ addNewTask, addCategory, categories }: NewTaskProps) => {
   const [repeatTask, setRepeatTask] = useState("");
   const [remind, setRemind] = useState("");
 
+  //igang med dette
+  const NewCategory = ({ addCategoryName }: NewCategoryProps) => {
+    const [categoryName, setCategoryName] = useState("");
+  };
+
   //eventhandler der bruges til at håndtere indsendelse af formularen
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +37,16 @@ const NewTask = ({ addNewTask, addCategory, categories }: NewTaskProps) => {
       setCategory("");
       setChooseDate("");
       setRepeatTask("");
+      setRemind("");
+    }
+  };
+
+  //igang med dette
+  const handleCategorySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (category) {
+      addCategory(categoryName);
+      setC;
     }
   };
   return (
