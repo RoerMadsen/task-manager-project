@@ -10,3 +10,7 @@
     gap: 1rem;
   }
 }
+
+.grid-row {
+  grid-template-rows: span 1;
+}

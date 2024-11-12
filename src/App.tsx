@@ -26,12 +26,13 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>The Mental Load</h1>
-      <NewTask addNewTask={addNewTask} />
-
-      {/* Vis alle opgaver */}
-      <div className="grid-container">
+    <div className="grid-container">
+      <div className="grid-item">
+        <h1>The Mental Load</h1>
+        <NewTask addNewTask={addNewTask} />
+      </div>
+      <div className="grid-item">
+        {/* Vis alle opgaver */}
         <h2>Alle Opgaver</h2>
         <ul>
           {tasks.map((task, index) => (
