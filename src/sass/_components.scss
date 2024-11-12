@@ -1,0 +1,45 @@
+@forward "base";
+// Style for select fields with Chips
+.select-chip-container {
+  width: 250px; // Bredde svarende til MenuProps
+}
+
+// MenuItem styling for Select
+.menu-item {
+  height: 48px; // ITEM_HEIGHT
+  padding-top: 8px; // ITEM_PADDING_TOP
+  color: #027364;
+
+  // Hvis du ønsker at justere font-størrelse eller padding
+  padding-left: 12px;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  // Eventuel hover effekt
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+// Chip styling inside Select
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; // Mellemrum mellem chips
+}
+
+// Select input styling (OutlinedInput)
+.select-input {
+  width: 100%; // Fylder hele containeren
+  padding: 8px; // Justerer indre afstand
+  font-size: 14px;
+
+  // Styling for select dropdown (height, padding-top)
+  .MuiSelect-select {
+    height: 48px; // Sørger for at select dropdownen har samme højde som ITEM_HEIGHT
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
