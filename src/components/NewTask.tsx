@@ -22,6 +22,8 @@ const NewTask = ({ addNewTask, addCategory, categories }: NewTaskProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    
     //kun felter med required er en del af if statement
     if (taskName && category && chooseDate) {
       addNewTask(taskName, category, chooseDate, repeatTask, remind);
