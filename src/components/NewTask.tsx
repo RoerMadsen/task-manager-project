@@ -59,10 +59,21 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
+
     // Tjekker om de krævede felter er udfyldt
     if (!taskName || !categoryName || !chooseDate) {
       setError("Alle felter skal udfyldes.");
       return;
+
+    
+    //kun felter med required er en del af if statement
+    if (taskName && category && chooseDate) {
+      addNewTask(taskName, category, chooseDate, repeatTask, remind);
+      setTaskName("");
+      setCategory("");
+      setChooseDate("");
+      setRepeatTask("");
+
     }
 
     // Hvis alle felter er fyldt, kaldes addNewTask og felterne resettes
