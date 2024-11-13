@@ -25,6 +25,8 @@ const NewTask = ({ addNewTask, addCategory, categories }: NewTaskProps) => {
   //eventhandler der bruges til at håndtere indsendelse af formularen
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    
     //kun felter med required er en del af if statement
     if (taskName && category && chooseDate) {
       addNewTask(taskName, category, chooseDate, repeatTask, remind);
