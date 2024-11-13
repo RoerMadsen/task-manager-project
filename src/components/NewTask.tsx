@@ -125,6 +125,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
         </Select>
       </FormControl>
       <TextField
+        className="inputField"
         label="Hvornår skal opgaven udføres?"
         type="date"
         value={chooseDate}

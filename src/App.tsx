@@ -36,6 +36,7 @@ const App = () => {
         <h2>Alle Opgaver</h2>
         <ul>
           {tasks.map((task, index) => (
+            //TS der sorterer opgaver efter kateogori og flytter udførte opgaver til bunden af listen
             <li key={index}>
               <strong>{task.taskName}</strong>
               <br />
