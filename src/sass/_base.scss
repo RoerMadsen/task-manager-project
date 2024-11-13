@@ -42,3 +42,22 @@ p {
     font-family: $subHeader-font;
   }
 }
+Textfield {
+  color: $primary;
+}
+
+button {
+  padding: 0.5rem;
+  height: 3.5em;
+  background-color: $primary;
+  color: white;
+  border: 2px solid $primary-dark;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: white;
+    color: $primary-dark;
+  }
+}
+
+//form
