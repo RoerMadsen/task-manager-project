@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import NewTask from "./components/NewTask";
 
 const App = () => {
   // State til at holde opgaven og dens oplysninger
@@ -29,7 +28,6 @@ const App = () => {
     <div className="grid-container">
       <div className="grid-item">
         <h1>The Mental Load</h1>
-        <NewTask addNewTask={addNewTask} />
       </div>
       <div className="grid-item">
         {/* Vis alle opgaver */}

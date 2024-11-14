@@ -67,10 +67,10 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
     
     //kun felter med required er en del af if statement
-    if (taskName && category && chooseDate) {
-      addNewTask(taskName, category, chooseDate, repeatTask, remind);
+    if (taskName && categoryName && chooseDate) {
+      addNewTask(taskName, categoryName, chooseDate, repeatTask, remind);
       setTaskName("");
-      setCategory("");
+      setCategoryName("");
       setChooseDate("");
       setRepeatTask("");
 
