@@ -39,11 +39,19 @@ const App = () => {
   const addNewTask = (
     taskName: string,
     category: string,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
   ) => {
-    const newTask = { taskName, category, chooseDate, repeatTask, remind };
+    const newTask = {
+      taskName,
+      category,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    };
     setTasks((prevTasks) => [...prevTasks, newTask]);
   };
 

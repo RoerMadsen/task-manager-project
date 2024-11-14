@@ -1,49 +1,55 @@
-import React from 'react';
-import './style.scss';
+import React from "react";
+import "./style.scss";
 
-interface ShopItemProps {
-  shopItem: {
+//Shabana & Amanda
+interface TaskItemProps {
+  taskItem: {
     id: number;
     name: string;
     priority: string;
     completed: boolean;
   };
-  removeShopItem: (id: number) => void;
-  toggleShopItemCompletion: (id: number) => void;
+  removeTaskItem: (id: number) => void;
+  toggleTaskItemCompletion: (id: number) => void;
 }
 
-const ShopItem: React.FC<ShopItemProps> = ({ shopItem, removeShopItem, toggleShopItemCompletion }) => {
+const TaskItem: React.FC<TaskItemProps> = ({
+  taskItem,
+  removeTaskItem,
+  toggleTaskItemCompletion
+}) => {
   const handleCompleteClick = (id: number) => {
-    if (!shopItem.completed) {
-      toggleShopItemCompletion(id);
+    if (!taskItem.completed) {
+      toggleTaskItemCompletion(id);
     }
   };
 
   const handleDeleteClick = (id: number) => {
-    const confirmed = window.confirm("Er du sikker på du ønsker at slette?");
+    const confirmed = window.confirm(
+      "Er du sikker på at du vil slette opgaven?"
+    );
     if (confirmed) {
-      removeShopItem(id);
+      removeTaskItem(id);
     }
   };
 
   return (
-    <li className={`shop-item ${shopItem.completed ? 'completed' : ''}`}>
-      <span>{shopItem.name}</span>
-      <span className={`priority-${shopItem.priority}`}> - Afdeling: {shopItem.priority}</span>
-      <button 
-        onClick={() => handleCompleteClick(shopItem.id)} 
-        className={`complete ${shopItem.completed ? 'active' : ''}`}
-      >
-        {shopItem.completed ? 'Undo' : 'Complete'}
+    <li className={`task-item ${taskItem.completed ? "completed" : ""}`}>
+      <span>{taskItem.name}</span>
+      <span className={`priority-${taskItem.priority}`}>
+        {" "}
+        - Afdeling: {taskItem.priority}
+      </span>
+      <button
+        onClick={() => handleCompleteClick(taskItem.id)}
+        className={`complete ${taskItem.completed ? "active" : ""}`}>
+        {taskItem.completed ? "Undo" : "Complete"}
       </button>
-      <button 
-        onClick={() => handleDeleteClick(shopItem.id)} 
-        className="delete"
-      >
+      <button onClick={() => handleDeleteClick(taskItem.id)} className="delete">
         Delete
       </button>
     </li>
   );
-}
+};
 
-export default ShopItem;
+export default TaskItem;

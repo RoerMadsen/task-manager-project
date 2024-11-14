@@ -1,56 +1,62 @@
-import React from 'react';
-import ShopItem from './TaskItem';
+import React from "react";
+import TaskItem from "./TaskItem";
 
-interface ShopListProps {
-  shopItems: {
+//Shabana - Hele Filen
+
+interface TaskListProps {
+  taskItems: {
     id: number;
     name: string;
     priority: string;
     completed: boolean;
-    shop: string;
+    task: string;
   }[];
-  removeShopItem: (id: number) => void;
-  toggleShopItemCompletion: (id: number) => void;
+  removeTaskItem: (id: number) => void;
+  toggleTaskItemCompletion: (id: number) => void;
 }
 
 const departmentOrder: { [key: string]: number } = {
-  'frugt/grønt': 1,
-  'brød': 2,
-  'kød': 3,
-  'mejeri': 4,
-  'konserves': 5,
-  'frost': 6,
-  'nonfood': 7,
+  "frugt/grønt": 1,
+  brød: 2,
+  kød: 3,
+  mejeri: 4,
+  konserves: 5,
+  frost: 6,
+  nonfood: 7
 };
 
-const ShopList: React.FC<ShopListProps> = ({ shopItems, removeShopItem, toggleShopItemCompletion }) => {
-  const sortedShopItems = shopItems.sort((a, b) => {
+const TaskList: React.FC<TaskListProps> = ({
+  taskItems,
+  removeTaskItem,
+  toggleTaskItemCompletion
+}) => {
+  const sortedTaskItems = taskItems.sort((a, b) => {
     if (a.completed !== b.completed) {
       return a.completed ? 1 : -1;
     }
     return departmentOrder[a.priority] - departmentOrder[b.priority];
   });
 
-  const groupedShopItems = sortedShopItems.reduce((acc, shopItem) => {
-    if (!acc[shopItem.shop]) {
-      acc[shopItem.shop] = [];
+  const groupedTaskItems = sortedTaskItems.reduce((acc, taskItem) => {
+    if (!acc[taskItem.task]) {
+      acc[taskItem.task] = [];
     }
-    acc[shopItem.shop].push(shopItem);
+    acc[taskItem.task].push(taskItem);
     return acc;
-  }, {} as { [key: string]: typeof shopItems[0][] });
+  }, {} as { [key: string]: (typeof taskItems)[0][] });
 
   return (
     <div>
-      {Object.keys(groupedShopItems).map((shop) => (
-        <div key={shop}>
-          <h2>{shop}</h2>
+      {Object.keys(groupedTaskItems).map((task) => (
+        <div key={task}>
+          <h2>{task}</h2>
           <ul>
-            {groupedShopItems[shop].map((shopItem) => (
-              <ShopItem
-                key={shopItem.id}
-                shopItem={shopItem}
-                removeShopItem={removeShopItem}
-                toggleShopItemCompletion={toggleShopItemCompletion}
+            {groupedTaskItems[task].map((taskItem) => (
+              <TaskItem
+                key={taskItem.id}
+                taskItem={taskItem}
+                removeTaskItem={removeTaskItem}
+                toggleTaskItemCompletion={toggleTaskItemCompletion}
               />
             ))}
           </ul>
@@ -60,4 +66,4 @@ const ShopList: React.FC<ShopListProps> = ({ shopItems, removeShopItem, toggleSh
   );
 };
 
-export default ShopList;
+export default TaskList;
