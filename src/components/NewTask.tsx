@@ -12,11 +12,16 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
 import { themeColors } from "../theme";
+import { FourMp } from "@mui/icons-material";
+import TaskItem from "./TaskItem";
+
+//Amanda - hele filen
 
 interface NewTaskProps {
   addNewTask: (
     taskName: string,
     category: string,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -27,6 +32,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   const theme = useTheme();
   const [taskName, setTaskName] = useState("");
   const [categoryName, setCategoryName] = useState("");
+  const [priority, setPriority] = useState("");
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
   const [remind, setRemind] = useState<string[]>([]);
@@ -47,6 +53,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     "Andet"
   ];
 
+  const priorityOptions = ["Meget Vigtig", "Vigtig", "Ikke Vigtig"];
+
   const repeatOptions = [
     "dagligt",
     "hver anden dag",
@@ -61,11 +69,29 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
+    // Log de data, der bliver sendt til addNewTask
+    const newTask = {
+      taskName,
+      categoryName,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    };
+    console.log("Opgave data før oprettelse:", newTask);
+
     // Hvis alle felter er fyldt, kaldes addNewTask og felterne resettes
-    addNewTask(taskName, categoryName, chooseDate, repeatTask, remind);
+    addNewTask(
+      taskName,
+      categoryName,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    );
     setTaskName("");
     setCategoryName("");
+    setPriority("");
     setChooseDate("");
     setRepeatTask("");
     setRemind([]);
@@ -74,6 +100,10 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
   const handleChangeCategory = (event: SelectChangeEvent<string>) => {
     setCategoryName(event.target.value);
+  };
+
+  const handleChangePriority = (event: SelectChangeEvent<string>) => {
+    setPriority(event.target.value);
   };
 
   const handleChangeRepeat = (event: SelectChangeEvent<string>) => {
@@ -100,6 +130,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
       )}
       <Box
         sx={{ minWidtt: 120, display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        {/** Felt til Ny Opgave Navn */}
         <TextField
           label="Tilføj Ny Opgave"
           value={taskName}
@@ -108,10 +139,11 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           required
         />
 
+        {/** Felt til Vælg Kategori */}
         <FormControl fullWidth required>
-          <InputLabel id="demo-category-label">Vælg Kategori</InputLabel>
+          <InputLabel id="category-label">Vælg Kategori</InputLabel>
           <Select
-            labelId="demo-category-label"
+            labelId="category-label"
             id="category-select"
             value={categoryName}
             onChange={handleChangeCategory}
@@ -124,6 +156,23 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           </Select>
         </FormControl>
 
+        {/** Felt til Vælg Prioritet */}
+        <FormControl fullWidth required>
+          <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
+          <Select
+            id="priority-select"
+            value={priority}
+            onChange={handleChangePriority}
+            input={<OutlinedInput label="Priority" />}>
+            {priorityOptions.map((priority) => (
+              <MenuItem key={priority} value={priority}>
+                {priority}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/** Felt til Vælg Dato */}
         <TextField
           className="inputField"
           label="Hvornår skal opgaven udføres?"
@@ -135,6 +184,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           InputLabelProps={{ shrink: true }}
         />
 
+        {/** Felt til Vælg Gentagelse */}
         <FormControl fullWidth>
           <InputLabel id="repeat-select-label">Repeat</InputLabel>
           <Select
@@ -149,6 +199,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             ))}
           </Select>
         </FormControl>
+
+        {/** Felt til Vælg Påmindelse */}
         <FormControl fullWidth>
           <InputLabel id="remind-multiple-chip-label">Remind</InputLabel>
           <Select
