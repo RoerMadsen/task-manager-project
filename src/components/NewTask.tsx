@@ -61,7 +61,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
+    
     // Hvis alle felter er fyldt, kaldes addNewTask og felterne resettes
     addNewTask(taskName, categoryName, chooseDate, repeatTask, remind);
     setTaskName("");
