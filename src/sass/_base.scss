@@ -1,5 +1,5 @@
 //Amanda
-//farver
+//farver - Husk også at rette i theme.ts hvis der laves ændringer i farverne
 $primary: #03a696;
 $primary-dark: #027364;
 $secondary: #f25922;
@@ -16,29 +16,50 @@ $header-font: "RobotoSlab-Bold";
 $subHeader-font: "Roboto-Bold";
 $regular-font: "Roboto-regular";
 
-@mixin fonts($family, $size, $color, $desktop-size) {
+@mixin fonts($family, $size, $color, $align, $desktop-size) {
   font-family: $family;
   font-size: $size;
   color: $color;
+  text-align: $align;
   @media (min-width: $tablet) {
     font-size: $desktop-size;
   }
 }
 
 h1 {
-  @include fonts($header-font, 2rem, $secondary, 3rem);
+  @include fonts($header-font, 2rem, $secondary, center, 3rem);
 }
 h2 {
-  @include fonts($subHeader-font, 1.5rem, $primary, 2rem);
+  @include fonts($subHeader-font, 1.5rem, $primary, center, 2rem);
 }
 h3 {
-  @include fonts($subHeader-font, 1.25rem, $dark, 1.5rem);
+  @include fonts($subHeader-font, 1.25rem, $dark, center, 1.5rem);
 }
 
 p {
-  @include fonts($regular-font, 1rem, $dark, 1.25rem);
+  @include fonts($regular-font, 1rem, $dark, left, 1.25rem);
 
   &.bold {
     font-family: $subHeader-font;
   }
 }
+
+li {
+  color: $primary-dark;
+}
+
+button {
+  padding: 0.5rem;
+  height: 3.5em;
+  background-color: $primary;
+  color: white;
+  border: 2px solid $primary-dark;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: white;
+    color: $primary-dark;
+  }
+}
+
+//form
