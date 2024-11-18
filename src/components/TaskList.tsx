@@ -1,65 +1,122 @@
 import React from "react";
-import TaskItem from "./TaskItem";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Checkbox,
+  Box,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-//Shabana - Hele Filen
-
-interface TaskListProps {
-  taskItems: {
-    id: number;
-    name: string;
-    priority: string;
-    completed: boolean;
-    task: string;
-  }[];
-  removeTaskItem: (id: number) => void;
-  toggleTaskItemCompletion: (id: number) => void;
+interface Task {
+  taskName: string;
+  category: string;
+  chooseDate: string;
+  repeatTask: string;
+  remind: string[];
+  priority: number;
 }
 
-const departmentOrder: { [key: string]: number } = {
-  "frugt/grønt": 1,
-  brød: 2,
-  kød: 3,
-  mejeri: 4,
-  konserves: 5,
-  frost: 6,
-  nonfood: 7
-};
+interface TaskListProps {
+  tasks: Task[];
+  checked: boolean[];
+  handleToggle: (index: number) => void;
+}
 
-const TaskList: React.FC<TaskListProps> = ({
-  taskItems,
-  removeTaskItem,
-  toggleTaskItemCompletion
-}) => {
-  const sortedTaskItems = taskItems.sort((a, b) => {
-    if (a.completed !== b.completed) {
-      return a.completed ? 1 : -1;
-    }
-    return departmentOrder[a.priority] - departmentOrder[b.priority];
-  });
+const TaskList: React.FC<TaskListProps> = ({ tasks, checked, handleToggle }) => {
+  // Definerer kategorilisten fra NewTask
+  const categories = [
+    "Børn",
+    "Rengøring",
+    "Havearbejde",
+    "Madlavning",
+    "Indkøb",
+    "Reperationer",
+    "Transport",
+    "Kæledyr",
+    "Aftaler",
+    "Motion",
+    "Selvforkælelse",
+    "Andet",
+  ];
 
-  const groupedTaskItems = sortedTaskItems.reduce((acc, taskItem) => {
-    if (!acc[taskItem.task]) {
-      acc[taskItem.task] = [];
+  // Gruppér opgaver efter kategori og sorter efter prioritet indenfor hver gruppe
+  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task) => {
+    if (!groups[task.category]) {
+      groups[task.category] = [];
     }
-    acc[taskItem.task].push(taskItem);
-    return acc;
-  }, {} as { [key: string]: (typeof taskItems)[0][] });
+    groups[task.category].push(task);
+    // Sortér opgaverne i hver kategori efter prioritet (højere prioritet først)
+    groups[task.category].sort((a, b) => b.priority - a.priority);
+    return groups;
+  }, {});
 
   return (
     <div>
-      {Object.keys(groupedTaskItems).map((task) => (
-        <div key={task}>
-          <h2>{task}</h2>
-          <ul>
-            {groupedTaskItems[task].map((taskItem) => (
-              <TaskItem
-                key={taskItem.id}
-                taskItem={taskItem}
-                removeTaskItem={removeTaskItem}
-                toggleTaskItemCompletion={toggleTaskItemCompletion}
-              />
-            ))}
-          </ul>
+      <h2>Dine Opgaver</h2>
+      {/* Iterér over kategorilisten for at vise hver kategori som en sektion */}
+      {categories.map((category) => (
+        <div key={category} style={{ marginBottom: "16px" }}>
+          {/* Viser kun kategorier, der har opgaver */}
+          {groupedTasks[category] && (
+            <>
+              {/* Kategoriens overskrift */}
+              <Typography variant="h6" gutterBottom>
+                {category}
+              </Typography>
+              {groupedTasks[category].map((task, index) => (
+                <Accordion key={`${category}-${index}`} sx={{ mb: 1 }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`panel-${index}-content`}
+                    id={`panel-${index}-header`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      {/* Checkbox til at markere opgaven som færdig */}
+                      <Checkbox
+                        edge="start"
+                        checked={checked[index]}
+                        onChange={() => handleToggle(index)}
+                        inputProps={{ "aria-label": "Task completed" }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      {/* Opgavens navn og prioritet vises som overskrift */}
+                      <Typography>
+                        <strong>{task.taskName}</strong> (Prioritet: {task.priority})
+                      </Typography>
+                    </Box>
+                  </AccordionSummary>
+
+                  {/* AccordionDetails viser ekstra information om opgaven */}
+                  <AccordionDetails>
+                    <div>
+                      <div>
+                        <strong>Kategori:</strong> {task.category}
+                      </div>
+                      <div>
+                        <strong>Hvornår:</strong> {task.chooseDate}
+                      </div>
+                      <div>
+                        <strong>Gentagelse:</strong> {task.repeatTask}
+                      </div>
+                      <div>
+                        <strong>Påmindelse:</strong> {task.remind.join(", ")}
+                      </div>
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </>
+          )}
+
         </div>
       ))}
     </div>
