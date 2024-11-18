@@ -6,13 +6,23 @@ import {
   AccordionDetails,
   Typography,
   Checkbox,
-  Box
+  Box,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 interface Task {
+  id: number;
   taskName: string;
   category: string;
+  priority: string;
   chooseDate: string;
   repeatTask: string;
   remind: string[];
@@ -30,6 +40,10 @@ const App = () => {
     new Array(tasks.length).fill(false)
   );
 
+  // State til at håndtere dialogboksen for redigering
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
+
   // Når tasks ændres, gemmes de i localStorage
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -37,21 +51,63 @@ const App = () => {
 
   // Funktion til at tilføje en ny opgave til listen
   const addNewTask = (
+    id: number,
     taskName: string,
     category: string,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
   ) => {
-    const newTask = { taskName, category, chooseDate, repeatTask, remind };
+    const newTask: Task = {
+      id,
+      taskName,
+      category,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    };
     setTasks((prevTasks) => [...prevTasks, newTask]);
   };
 
   // Funktion til at opdatere status for en checkbox (hvilken opgave der er færdig)
   const handleToggle = (index: number) => {
     const updatedChecked = [...checked];
-    updatedChecked[index] = !updatedChecked[index]; // Skift status for den valgte opgave
+    updatedChecked[index] = !updatedChecked[index];
     setChecked(updatedChecked);
+  };
+
+  // Funktion til at åbne dialogboksen og initialisere den med opgavens data
+  const handleOpenDialog = (task: Task) => {
+    setCurrentTask(task);
+    setIsDialogOpen(true);
+  };
+
+  // Funktion til at lukke dialogboksen
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setCurrentTask(null);
+  };
+
+  // Funktion til at håndtere ændringer i redigeringsformularen
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (currentTask) {
+      const { name, value } = e.target;
+      setCurrentTask({ ...currentTask, [name]: value });
+    }
+  };
+
+  // Funktion til at opdatere opgaven
+  const handleUpdateTask = () => {
+    if (currentTask) {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === currentTask.id ? currentTask : task
+        )
+      );
+      handleCloseDialog();
+    }
   };
 
   return (
@@ -59,43 +115,52 @@ const App = () => {
       <div className="grid-item header">
         <h1>The Mental Load</h1>
       </div>
+
+      {/* Opgaveliste */}
       <div className="grid-item">
         <h2>Dine Opgaver</h2>
-        {/* Render alle opgaver i en Accordion */}
         {tasks.map((task, index) => (
-          <Accordion key={index} sx={{ mb: 1 }}>
-            {/* AccordionSummary bruges til at vise overskriften på opgaven og kan klikkes for at åbne/holde den lukket */}
+          <Accordion key={task.id} sx={{ mb: 1 }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel-${index}-content`}
-              id={`panel-${index}-header`}
+              aria-controls={`panel-${task.id}-content`}
+              id={`panel-${task.id}-header`}
               onClick={(e) => e.stopPropagation()}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  textAlign: "center"
+                  textAlign: "center",
+                  width: "100%"
                 }}>
                 {/* Checkbox til at markere opgaven som færdig */}
                 <Checkbox
                   edge="start"
                   checked={checked[index]}
-                  onChange={() => handleToggle(index)} // Skift status når checkboxen trykkes
+                  onChange={() => handleToggle(index)}
                   inputProps={{ "aria-label": "Task completed" }}
                   onClick={(e) => e.stopPropagation()}
                 />
-                {/* Opgavens navn vises som overskrift */}
-                <Typography>
+                <Typography sx={{ flexGrow: 1 }}>
                   <strong>{task.taskName}</strong>
                 </Typography>
+                {/* Settings-ikon */}
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenDialog(task);
+                  }}>
+                  <SettingsIcon />
+                </IconButton>
               </Box>
             </AccordionSummary>
-
-            {/* AccordionDetails viser den ekstra information om opgaven, når den er udvidet */}
             <AccordionDetails>
               <div>
                 <div>
                   <strong>Kategori:</strong> {task.category}
+                </div>
+                <div>
+                  <strong>Prioritet:</strong> {task.priority}
                 </div>
                 <div>
                   <strong>Hvornår:</strong> {task.chooseDate}
@@ -112,11 +177,85 @@ const App = () => {
         ))}
       </div>
 
+      {/* Tilføj ny opgave */}
       <div className="grid-item">
         <h2>Tilføj Ny Opgave</h2>
-        {/* Komponent til at tilføje en ny opgave */}
         <NewTask addNewTask={addNewTask} />
       </div>
+
+      {/* Dialog til redigering */}
+      <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Rediger Opgave</DialogTitle>
+        <DialogContent>
+          {currentTask && (
+            <>
+              <TextField
+                label="Opgavenavn"
+                name="taskName"
+                value={currentTask.taskName}
+                onChange={handleChange}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label="Kategori"
+                name="category"
+                value={currentTask.category}
+                onChange={handleChange}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label="Prioritet"
+                name="priority"
+                value={currentTask.priority}
+                onChange={handleChange}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label="Hvornår"
+                name="chooseDate"
+                value={currentTask.chooseDate}
+                onChange={handleChange}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label="Gentagelse"
+                name="repeatTask"
+                value={currentTask.repeatTask}
+                onChange={handleChange}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label="Påmindelse"
+                name="remind"
+                value={currentTask.remind.join(", ")}
+                onChange={(e) =>
+                  setCurrentTask((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          remind: e.target.value.split(",").map((s) => s.trim())
+                        }
+                      : null
+                  )
+                }
+                fullWidth
+                margin="dense"
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Annuller</Button>
+          <Button onClick={handleUpdateTask} variant="contained">
+            Opdater Opgave
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -15,8 +15,10 @@ import { themeColors } from "../theme";
 
 interface NewTaskProps {
   addNewTask: (
+    id: number,
     taskName: string,
     category: string,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -25,13 +27,20 @@ interface NewTaskProps {
 
 const NewTask = ({ addNewTask }: NewTaskProps) => {
   const theme = useTheme();
+
+  // State til at holde styr på opgave-ID (starter ved 1)
+  const [taskIdCounter, setTaskIdCounter] = useState(1);
+
+  // State til at holde værdier for hver opgave
   const [taskName, setTaskName] = useState("");
   const [categoryName, setCategoryName] = useState("");
+  const [priority, setPriority] = useState("");
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
   const [remind, setRemind] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Kategorier, prioriteter og valgmuligheder til gentagelse/påmindelser
   const categories = [
     "Børn",
     "Rengøring",
@@ -46,7 +55,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     "Selvforkælelse",
     "Andet"
   ];
-
+  const priorityOptions = ["Meget Vigtig", "Vigtig", "Ikke Vigtig"];
   const repeatOptions = [
     "dagligt",
     "hver anden dag",
@@ -56,42 +65,82 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     "månedligt",
     "aldrig"
   ];
-
   const remindOptions = ["morgen", "aften", "aldrig"];
 
+  // Håndtering af form-submit (oprette ny opgave)
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
-    // Hvis alle felter er fyldt, kaldes addNewTask og felterne resettes
-    addNewTask(taskName, categoryName, chooseDate, repeatTask, remind);
+
+    // Validering: Hvis obligatoriske felter ikke er udfyldt, vis fejl
+    if (!taskName || !categoryName || !priority || !chooseDate) {
+      setError("Alle obligatoriske felter skal udfyldes.");
+      return;
+    }
+
+    // Opret ny opgave med det nuværende taskIdCounter som unikt ID
+    const newTask = {
+      id: taskIdCounter,
+      taskName,
+      categoryName,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    };
+
+    console.log("Ny opgave data:", newTask);
+
+    // Tilføj opgaven og opdater tælleren for næste opgave-ID
+    addNewTask(
+      taskIdCounter,
+      taskName,
+      categoryName,
+      priority,
+      chooseDate,
+      repeatTask,
+      remind
+    );
+    setTaskIdCounter(taskIdCounter + 1); // Øger ID-tælleren med 1
+
+    // Nulstil felter efter tilføjelse af opgave
     setTaskName("");
     setCategoryName("");
+    setPriority("");
     setChooseDate("");
     setRepeatTask("");
     setRemind([]);
     setError(null); // Fjerner fejlmeddelelsen
   };
 
+  // Håndtering af ændringer for kategori
   const handleChangeCategory = (event: SelectChangeEvent<string>) => {
     setCategoryName(event.target.value);
   };
 
+  // Håndtering af ændringer for prioritet
+  const handleChangePriority = (event: SelectChangeEvent<string>) => {
+    setPriority(event.target.value);
+  };
+
+  // Håndtering af ændringer for gentagelse
   const handleChangeRepeat = (event: SelectChangeEvent<string>) => {
     setRepeatTask(event.target.value);
   };
 
+  // Håndtering af ændringer for påmindelser
   const handleChangeRemind = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value }
     } = event;
     setRemind(
-      // På autofill får vi en stringified værdi
+      // Splitter string hvis værdien er en kommasepareret liste
       typeof value === "string" ? value.split(",") : value
     );
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      {/** Fejlmeddelelse, hvis felter ikke er udfyldt korrekt */}
       {error && (
         <Alert severity="warning">
           <AlertTitle>Udfyld felterne for at fortsætte</AlertTitle>
@@ -100,6 +149,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
       )}
       <Box
         sx={{ minWidtt: 120, display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        {/** Inputfelt til opgavenavn */}
         <TextField
           label="Tilføj Ny Opgave"
           value={taskName}
@@ -108,10 +158,11 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           required
         />
 
+        {/** Dropdown til valg af kategori */}
         <FormControl fullWidth required>
-          <InputLabel id="demo-category-label">Vælg Kategori</InputLabel>
+          <InputLabel id="category-label">Vælg Kategori</InputLabel>
           <Select
-            labelId="demo-category-label"
+            labelId="category-label"
             id="category-select"
             value={categoryName}
             onChange={handleChangeCategory}
@@ -124,8 +175,24 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           </Select>
         </FormControl>
 
+        {/** Dropdown til valg af prioritet */}
+        <FormControl fullWidth required>
+          <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
+          <Select
+            id="priority-select"
+            value={priority}
+            onChange={handleChangePriority}
+            input={<OutlinedInput label="Priority" />}>
+            {priorityOptions.map((priority) => (
+              <MenuItem key={priority} value={priority}>
+                {priority}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/** Inputfelt til valg af dato */}
         <TextField
-          className="inputField"
           label="Hvornår skal opgaven udføres?"
           type="date"
           value={chooseDate}
@@ -135,6 +202,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           InputLabelProps={{ shrink: true }}
         />
 
+        {/** Dropdown til valg af gentagelse */}
         <FormControl fullWidth>
           <InputLabel id="repeat-select-label">Repeat</InputLabel>
           <Select
@@ -149,6 +217,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             ))}
           </Select>
         </FormControl>
+
+        {/** Dropdown til valg af påmindelser */}
         <FormControl fullWidth>
           <InputLabel id="remind-multiple-chip-label">Remind</InputLabel>
           <Select
@@ -165,7 +235,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
                 ))}
               </Box>
             )}
-            disabled={remind.includes("aldrig")}>
+            disabled={remind.includes("aldrig")} // Deaktiver påmindelse hvis "aldrig" er valgt
+          >
             {remindOptions.map((remindOption) => (
               <MenuItem key={remindOption} value={remindOption}>
                 {remindOption}
@@ -174,6 +245,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           </Select>
         </FormControl>
 
+        {/** Knap til at tilføje ny opgave */}
         <Button
           variant="contained"
           type="submit"
