@@ -13,6 +13,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
 import { themeColors } from "./theme";
 
+
 interface NewTaskProps {
   addNewTask: (
     id: number,
@@ -121,6 +122,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   const handleChangePriority = (event: SelectChangeEvent<string>) => {
     const selectedPriority = parseInt(event.target.value); // Konverter værdi til tal
     setPriority(selectedPriority);
+
   };
 
   // Håndtering af ændringer for gentagelse
@@ -219,6 +221,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
         {/** Dropdown til valg af påmindelser */}
         <FormControl fullWidth>
+
           <InputLabel id="remind-label">Påmindelse</InputLabel>
           <Select
             labelId="remind-label"

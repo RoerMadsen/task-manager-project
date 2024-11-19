@@ -8,6 +8,10 @@ import {
   DialogActions,
   Button
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Task } from './types'; 
 import TaskList from "./TaskList";
 
 interface Task {
@@ -96,10 +100,19 @@ const App = () => {
     }
   };
 
+  // Funktion til at slette alle opgaver
+  const handleDeleteAll = () => {
+    setTasks([]);  // Sletter alle opgaver
+    localStorage.setItem("tasks", JSON.stringify([]));  // Opdaterer localStorage
+  };
+
   return (
     <div className="grid-container">
       <div className="grid-item header">
         <h1>The Mental Load</h1>
+        <IconButton onClick={handleDeleteAll} color="error">
+          <DeleteIcon />
+        </IconButton>
       </div>
 
       {/** 
