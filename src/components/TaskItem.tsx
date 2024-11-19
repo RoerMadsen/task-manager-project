@@ -12,10 +12,12 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Button
+  Button,
+  DialogContentText
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import the delete icon
 
 interface Task {
   id: number;
@@ -31,25 +33,24 @@ interface TaskItemProps {
   task: Task;
   checked: boolean;
   onToggle: () => void;
-  onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
+  onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask: () => void; // Function to handle task deletion
 }
 
-const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
+const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
+  const [editedTask, setEditedTask] = useState(task);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // State for delete confirmation dialog
 
-  // Åbn dialogboksen
   const handleOpenDialog = () => {
-    setEditedTask(task); // Initialiser dialogen med aktuelle værdier
+    setEditedTask(task);
     setIsDialogOpen(true);
   };
 
-  // Luk dialogboksen
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
   };
 
-  // Håndter ændringer i formularen
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedTask((prev) => ({
@@ -58,27 +59,41 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
     }));
   };
 
-  // Opdater opgaven
   const handleUpdateTask = () => {
-    onUpdateTask(editedTask); // Send opdaterede værdier tilbage til parent
-    handleCloseDialog(); // Luk dialogen
+    onUpdateTask(editedTask);
+    handleCloseDialog();
+  };
+
+  // Handle delete confirmation dialog
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleDeleteTask = () => {
+    onDeleteTask();
+    handleCloseDeleteDialog();
   };
 
   return (
     <>
-      {/* Accordion til at vise opgaven */}
       <Accordion sx={{ mb: 1 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls={`panel-${task.id}-content`}
-          id={`panel-${task.id}-header`}>
+          id={`panel-${task.id}-header`}
+        >
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               textAlign: "center",
               width: "100%"
-            }}>
+            }}
+          >
             <Checkbox
               edge="start"
               checked={checked}
@@ -88,9 +103,12 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
             <Typography sx={{ flexGrow: 1 }}>
               <strong>{task.taskName}</strong>
             </Typography>
-            {/* Settings-ikon */}
             <IconButton onClick={handleOpenDialog}>
               <SettingsIcon />
+            </IconButton>
+            {/* Delete button */}
+            <IconButton onClick={handleOpenDeleteDialog}>
+              <DeleteIcon />
             </IconButton>
           </Box>
         </AccordionSummary>
@@ -115,7 +133,6 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Dialog til redigering af opgave */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Rediger Opgave</DialogTitle>
         <DialogContent>
@@ -177,6 +194,25 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
           <Button onClick={handleCloseDialog}>Annuller</Button>
           <Button onClick={handleUpdateTask} variant="contained">
             Opdater Opgave
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+      >
+        <DialogTitle>Bekræft Sletning</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Er du sikker på, at du vil slette denne opgave?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Annuller</Button>
+          <Button onClick={handleDeleteTask} color="error" variant="contained">
+            Slet Opgave
           </Button>
         </DialogActions>
       </Dialog>

@@ -16,7 +16,9 @@ interface Task {
   repeatTask: string;
   remind: string[];
   priority: number;
+  isChecked?: boolean; // Tilføj denne linje
 }
+
 
 interface TaskListProps {
   tasks: Task[];
@@ -41,14 +43,21 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, checked, handleToggle }) => 
     "Andet",
   ];
 
-  // Gruppér opgaver efter kategori og sorter efter prioritet indenfor hver gruppe
-  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task) => {
+  // Gruppér opgaver efter kategori og sorter efter prioritet og status indenfor hver gruppe
+  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task, index) => {
     if (!groups[task.category]) {
       groups[task.category] = [];
     }
-    groups[task.category].push(task);
-    // Sortér opgaverne i hver kategori efter prioritet (højere prioritet først)
-    groups[task.category].sort((a, b) => b.priority - a.priority);
+    groups[task.category].push({ ...task, isChecked: checked[index] });
+
+    // Sortér opgaverne efter prioritet (højere prioritet først) og status (ikke-udført først)
+    groups[task.category].sort((a, b) => {
+      if (a.isChecked !== b.isChecked) {
+        return a.isChecked ? 1 : -1; // Flytter udførte opgaver nederst
+      }
+      return b.priority - a.priority; // Sorterer efter prioritet
+    });
+
     return groups;
   }, {});
 
@@ -116,7 +125,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, checked, handleToggle }) => 
               ))}
             </>
           )}
-
         </div>
       ))}
     </div>
