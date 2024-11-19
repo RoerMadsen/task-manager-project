@@ -143,13 +143,6 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
             <IconButton onClick={handleOpenDialog}>
               <SettingsIcon />
             </IconButton>
-
-
-            {/* Delete-ikon */}
-            <IconButton onClick={handleDeleteTask}>
-              <DeleteIcon />
-            </IconButton>
-
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -167,11 +160,7 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
               <strong>Gentagelse:</strong> {task.repeatTask}
             </div>
             <div>
-
-              <strong>Påmindelse:</strong> {task.remind.join(", ")}
-
               <strong>Påmindelse:</strong> {task.remind}
-
             </div>
           </div>
         </AccordionDetails>

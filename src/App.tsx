@@ -8,21 +8,10 @@ import {
   DialogActions,
   Button
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SettingsIcon from "@mui/icons-material/Settings";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Task } from './types'; 
+import IconButton from "@mui/material/IconButton";
+import { Task } from "./types";
 import TaskList from "./TaskList";
-
-interface Task {
-  id: number;
-  taskName: string;
-  category: string;
-  priority: number;
-  chooseDate: string;
-  repeatTask: string;
-  remind: string[];
-}
 
 const App = () => {
   // Hent opgaver fra localStorage, hvis der er nogen gemt
@@ -50,7 +39,7 @@ const App = () => {
     id: number,
     taskName: string,
     category: string,
-    priority: number,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -102,8 +91,8 @@ const App = () => {
 
   // Funktion til at slette alle opgaver
   const handleDeleteAll = () => {
-    setTasks([]);  // Sletter alle opgaver
-    localStorage.setItem("tasks", JSON.stringify([]));  // Opdaterer localStorage
+    setTasks([]); // Sletter alle opgaver
+    localStorage.setItem("tasks", JSON.stringify([])); // Opdaterer localStorage
   };
 
   return (
@@ -115,71 +104,22 @@ const App = () => {
         </IconButton>
       </div>
 
-      {/** 
-      <div className="grid-item">
-        <h2>Dine Opgaver</h2>
-        {tasks.map((task, index) => (
-          <Accordion key={task.id} sx={{ mb: 1 }}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel-${task.id}-content`}
-              id={`panel-${task.id}-header`}
-              onClick={(e) => e.stopPropagation()}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                  width: "100%"
-                }}>
-                
-                <Checkbox
-                  edge="start"
-                  checked={checked[index]}
-                  onChange={() => handleToggle(index)}
-                  inputProps={{ "aria-label": "Task completed" }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <Typography sx={{ flexGrow: 1 }}>
-                  <strong>{task.taskName}</strong>
-                </Typography>
-               
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenDialog(task);
-                  }}>
-                  <SettingsIcon />
-                </IconButton>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div>
-                <div>
-                  <strong>Kategori:</strong> {task.category}
-                </div>
-                <div>
-                  <strong>Prioritet:</strong> {task.priority}
-                </div>
-                <div>
-                  <strong>Hvornår:</strong> {task.chooseDate}
-                </div>
-                <div>
-                  <strong>Gentagelse:</strong> {task.repeatTask}
-                </div>
-                <div>
-                  <strong>Påmindelse:</strong> {task.remind.join(", ")}
-                </div>
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </div>
-      */}
-
       <div className=" grid-item">
         <h2>TaskList</h2>
-        <TaskList tasks={tasks} checked={checked} handleToggle={handleToggle} />
+        <TaskList
+          tasks={tasks}
+          checked={checked}
+          handleToggle={handleToggle}
+          handleDeleteAll={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+          onUpdateTask={function (updatedTask: Task): void {
+            throw new Error("Function not implemented.");
+          }}
+          onDeleteTask={function (taskId: number): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
       </div>
 
       <div className="grid-item">
