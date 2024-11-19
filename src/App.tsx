@@ -166,12 +166,7 @@ const App = () => {
 
       <div className=" grid-item">
         <h2>TaskList</h2>
-        <TaskList
-          tasks={tasks}
-          checked={checked}
-          handleToggle={handleToggle}
-          filters={{ category: "", date: "" }} // Standardværdi for filters
-        />
+        <TaskList tasks={tasks} checked={checked} handleToggle={handleToggle} />
       </div>
 
       <div className="grid-item">
