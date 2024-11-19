@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import af DeleteIcon
 
 interface Task {
   id: number;
@@ -31,16 +32,17 @@ interface TaskItemProps {
   task: Task;
   checked: boolean;
   onToggle: () => void;
-  onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
+  onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask: (taskId: number) => void; // Funktion til at slette opgave
 }
 
-const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
+const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
+  const [editedTask, setEditedTask] = useState(task);
 
   // Åbn dialogboksen
   const handleOpenDialog = () => {
-    setEditedTask(task); // Initialiser dialogen med aktuelle værdier
+    setEditedTask(task);
     setIsDialogOpen(true);
   };
 
@@ -60,13 +62,17 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
 
   // Opdater opgaven
   const handleUpdateTask = () => {
-    onUpdateTask(editedTask); // Send opdaterede værdier tilbage til parent
-    handleCloseDialog(); // Luk dialogen
+    onUpdateTask(editedTask);
+    handleCloseDialog();
+  };
+
+  // Slet opgaven
+  const handleDeleteTask = () => {
+    onDeleteTask(task.id); // Kalds for at slette opgaven
   };
 
   return (
     <>
-      {/* Accordion til at vise opgaven */}
       <Accordion sx={{ mb: 1 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -88,9 +94,15 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
             <Typography sx={{ flexGrow: 1 }}>
               <strong>{task.taskName}</strong>
             </Typography>
+
             {/* Settings-ikon */}
             <IconButton onClick={handleOpenDialog}>
               <SettingsIcon />
+            </IconButton>
+
+            {/* Delete-ikon */}
+            <IconButton onClick={handleDeleteTask}>
+              <DeleteIcon />
             </IconButton>
           </Box>
         </AccordionSummary>

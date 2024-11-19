@@ -11,7 +11,7 @@ import Chip from "@mui/material/Chip";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
-import { themeColors } from "../theme";
+import { themeColors } from "./theme"; // Assuming the theme file is in the same directory//+
 
 interface NewTaskProps {
   addNewTask: (

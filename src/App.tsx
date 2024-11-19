@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NewTask from "./components/NewTask";
+import NewTask from "./NewTask";
 import {
   Accordion,
   AccordionSummary,
@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Task } from './types'; 
 
 interface Task {
   id: number;
@@ -110,10 +112,19 @@ const App = () => {
     }
   };
 
+  // Funktion til at slette alle opgaver
+  const handleDeleteAll = () => {
+    setTasks([]);  // Sletter alle opgaver
+    localStorage.setItem("tasks", JSON.stringify([]));  // Opdaterer localStorage
+  };
+
   return (
     <div className="grid-container">
       <div className="grid-item header">
         <h1>The Mental Load</h1>
+        <IconButton onClick={handleDeleteAll} color="error">
+          <DeleteIcon />
+        </IconButton>
       </div>
 
       {/* Opgaveliste */}
