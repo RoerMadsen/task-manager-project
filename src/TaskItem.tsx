@@ -10,13 +10,17 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
   DialogActions,
-  Button
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent
 } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DeleteIcon from "@mui/icons-material/Delete"; // Import af DeleteIcon
 
 interface Task {
   id: number;
@@ -25,24 +29,51 @@ interface Task {
   priority: string;
   chooseDate: string;
   repeatTask: string;
-  remind: string[];
+  remind: string; // Ændret til en enkelt værdi i stedet for et array
 }
 
 interface TaskItemProps {
   task: Task;
   checked: boolean;
   onToggle: () => void;
-  onUpdateTask: (updatedTask: Task) => void;
-  onDeleteTask: (taskId: number) => void; // Funktion til at slette opgave
+  onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
 }
 
-const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskItemProps) => {
+const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editedTask, setEditedTask] = useState(task);
+  const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
+
+  // Kategorier, prioriteter og valgmuligheder til gentagelse/påmindelser
+  const categories = [
+    "Børn",
+    "Rengøring",
+    "Havearbejde",
+    "Madlavning",
+    "Indkøb",
+    "Reperationer",
+    "Transport",
+    "Kæledyr",
+    "Aftaler",
+    "Motion",
+    "Selvforkælelse",
+    "Andet"
+  ];
+  const priorityOptions = ["1", "2", "3"];
+  const repeatOptions = [
+    "dagligt",
+    "hver anden dag",
+    "ugentligt",
+    "hver 2. uge",
+    "hver 3. uge",
+    "månedligt",
+    "aldrig"
+  ];
+  const remindOptions = ["morgen", "aften", "aldrig"]; // Påmindelsesmuligheder
 
   // Åbn dialogboksen
   const handleOpenDialog = () => {
-    setEditedTask(task);
+    setEditedTask(task); // Initialiser dialogen med aktuelle værdier
+
     setIsDialogOpen(true);
   };
 
@@ -52,7 +83,17 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskI
   };
 
   // Håndter ændringer i formularen
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+    setEditedTask((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleTextFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setEditedTask((prev) => ({
       ...prev,
@@ -62,13 +103,16 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskI
 
   // Opdater opgaven
   const handleUpdateTask = () => {
-    onUpdateTask(editedTask);
-    handleCloseDialog();
+    onUpdateTask(editedTask); // Send opdaterede værdier tilbage til parent
+    handleCloseDialog(); // Luk dialogen
   };
 
-  // Slet opgaven
-  const handleDeleteTask = () => {
-    onDeleteTask(task.id); // Kalds for at slette opgaven
+  // Håndtering af ændringer for påmindelser (enkelt valg)
+  const handleChangeRemind = (e: SelectChangeEvent<string>) => {
+    setEditedTask((prev) => ({
+      ...prev,
+      remind: e.target.value // Opdaterer kun én påmindelse
+    }));
   };
 
   return (
@@ -100,10 +144,12 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskI
               <SettingsIcon />
             </IconButton>
 
+
             {/* Delete-ikon */}
             <IconButton onClick={handleDeleteTask}>
               <DeleteIcon />
             </IconButton>
+
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -121,7 +167,11 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskI
               <strong>Gentagelse:</strong> {task.repeatTask}
             </div>
             <div>
+
               <strong>Påmindelse:</strong> {task.remind.join(", ")}
+
+              <strong>Påmindelse:</strong> {task.remind}
+
             </div>
           </div>
         </AccordionDetails>
@@ -135,55 +185,86 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskI
             label="Opgavenavn"
             name="taskName"
             value={editedTask.taskName}
-            onChange={handleChange}
+            onChange={handleTextFieldChange}
             fullWidth
             margin="dense"
           />
-          <TextField
-            label="Kategori"
-            name="category"
-            value={editedTask.category}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label="Prioritet"
-            name="priority"
-            value={editedTask.priority}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          />
+
+          {/* Dropdown til valg af kategori */}
+          <FormControl fullWidth margin="dense" required>
+            <InputLabel id="category-label">Vælg Kategori</InputLabel>
+            <Select
+              labelId="category-label"
+              value={editedTask.category}
+              name="category"
+              onChange={handleChange}>
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Dropdown til valg af prioritet */}
+          <FormControl fullWidth margin="dense" required>
+            <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
+            <Select
+              labelId="priority-label"
+              value={editedTask.priority}
+              name="priority"
+              onChange={handleChange}>
+              {priorityOptions.map((priority) => (
+                <MenuItem key={priority} value={priority}>
+                  {priority}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Inputfelt til valg af dato */}
           <TextField
             label="Hvornår"
             name="chooseDate"
             value={editedTask.chooseDate}
-            onChange={handleChange}
+            onChange={handleTextFieldChange}
             fullWidth
             margin="dense"
+            type="date"
+            InputLabelProps={{ shrink: true }}
           />
-          <TextField
-            label="Gentagelse"
-            name="repeatTask"
-            value={editedTask.repeatTask}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label="Påmindelse"
-            name="remind"
-            value={editedTask.remind.join(", ")}
-            onChange={(e) =>
-              setEditedTask((prev) => ({
-                ...prev,
-                remind: e.target.value.split(",").map((s) => s.trim())
-              }))
-            }
-            fullWidth
-            margin="dense"
-          />
+
+          {/* Dropdown til valg af gentagelse */}
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="repeat-select-label">Gentagelse</InputLabel>
+            <Select
+              labelId="repeat-select-label"
+              value={editedTask.repeatTask}
+              name="repeatTask"
+              onChange={handleChange}>
+              {repeatOptions.map((repeat) => (
+                <MenuItem key={repeat} value={repeat}>
+                  {repeat}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Dropdown til valg af påmindelser (enkelt valg) */}
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="remind-select-label">Påmindelse</InputLabel>
+            <Select
+              labelId="remind-select-label"
+              value={editedTask.remind}
+              name="remind"
+              onChange={handleChangeRemind}>
+              {remindOptions.map((remindOption) => (
+                <MenuItem key={remindOption} value={remindOption}>
+                  {remindOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Annuller</Button>

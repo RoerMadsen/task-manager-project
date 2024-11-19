@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Button, Typography, Box } from "@mui/material";
 import TaskItem from "./TaskItem";  // Sørg for at importere TaskItem korrekt
 import { Task } from "./types"; // Sørg for at importere Task korrekt
@@ -49,6 +50,7 @@ const TaskList: React.FC<TaskListProps> = ({
     <div>
       <h2>Dine Opgaver</h2>
 
+
       {/* Knap til at slette alle opgaver */}
       <Button
         variant="contained"
@@ -64,6 +66,7 @@ const TaskList: React.FC<TaskListProps> = ({
         <div key={category} style={{ marginBottom: "16px" }}>
           {/* Viser kun kategorier, der har opgaver */}
           {groupedTasks[category] && groupedTasks[category].length > 0 && (
+
             <>
               {/* Kategoriens overskrift */}
               <Typography variant="h6" gutterBottom>

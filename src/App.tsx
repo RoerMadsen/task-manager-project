@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NewTask from "./NewTask";
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Checkbox,
-  Box,
-  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -19,12 +12,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Task } from './types'; 
+import TaskList from "./TaskList";
 
 interface Task {
   id: number;
   taskName: string;
   category: string;
-  priority: string;
+  priority: number;
   chooseDate: string;
   repeatTask: string;
   remind: string[];
@@ -56,7 +50,7 @@ const App = () => {
     id: number,
     taskName: string,
     category: string,
-    priority: string,
+    priority: number,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -78,12 +72,6 @@ const App = () => {
     const updatedChecked = [...checked];
     updatedChecked[index] = !updatedChecked[index];
     setChecked(updatedChecked);
-  };
-
-  // Funktion til at åbne dialogboksen og initialisere den med opgavens data
-  const handleOpenDialog = (task: Task) => {
-    setCurrentTask(task);
-    setIsDialogOpen(true);
   };
 
   // Funktion til at lukke dialogboksen
@@ -127,7 +115,7 @@ const App = () => {
         </IconButton>
       </div>
 
-      {/* Opgaveliste */}
+      {/** 
       <div className="grid-item">
         <h2>Dine Opgaver</h2>
         {tasks.map((task, index) => (
@@ -144,7 +132,7 @@ const App = () => {
                   textAlign: "center",
                   width: "100%"
                 }}>
-                {/* Checkbox til at markere opgaven som færdig */}
+                
                 <Checkbox
                   edge="start"
                   checked={checked[index]}
@@ -155,7 +143,7 @@ const App = () => {
                 <Typography sx={{ flexGrow: 1 }}>
                   <strong>{task.taskName}</strong>
                 </Typography>
-                {/* Settings-ikon */}
+               
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
@@ -187,14 +175,18 @@ const App = () => {
           </Accordion>
         ))}
       </div>
+      */}
 
-      {/* Tilføj ny opgave */}
+      <div className=" grid-item">
+        <h2>TaskList</h2>
+        <TaskList tasks={tasks} checked={checked} handleToggle={handleToggle} />
+      </div>
+
       <div className="grid-item">
         <h2>Tilføj Ny Opgave</h2>
         <NewTask addNewTask={addNewTask} />
       </div>
 
-      {/* Dialog til redigering */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Rediger Opgave</DialogTitle>
         <DialogContent>
