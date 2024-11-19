@@ -11,14 +11,14 @@ import Chip from "@mui/material/Chip";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
-import { themeColors } from "../theme";
+import { themeColors } from "./theme";
 
 interface NewTaskProps {
   addNewTask: (
     id: number,
     taskName: string,
     category: string,
-    priority: string,
+    priority: number,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -34,7 +34,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   // State til at holde værdier for hver opgave
   const [taskName, setTaskName] = useState("");
   const [categoryName, setCategoryName] = useState("");
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState(1);
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
   const [remind, setRemind] = useState<string[]>([]);
@@ -55,7 +55,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     "Selvforkælelse",
     "Andet"
   ];
-  const priorityOptions = ["Meget Vigtig", "Vigtig", "Ikke Vigtig"];
+  const priorityOptions = [1, 2, 3];
   const repeatOptions = [
     "dagligt",
     "hver anden dag",
@@ -105,7 +105,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     // Nulstil felter efter tilføjelse af opgave
     setTaskName("");
     setCategoryName("");
-    setPriority("");
+    setPriority(1);
     setChooseDate("");
     setRepeatTask("");
     setRemind([]);
@@ -119,7 +119,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
   // Håndtering af ændringer for prioritet
   const handleChangePriority = (event: SelectChangeEvent<string>) => {
-    setPriority(event.target.value);
+    const selectedPriority = parseInt(event.target.value); // Konverter værdi til tal
+    setPriority(selectedPriority);
   };
 
   // Håndtering af ændringer for gentagelse
@@ -128,14 +129,12 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   };
 
   // Håndtering af ændringer for påmindelser
-  const handleChangeRemind = (event: SelectChangeEvent<string[]>) => {
+  // Håndtering af ændringer for påmindelser (kun én valgmulighed)
+  const handleChangeRemind = (event: SelectChangeEvent<string>) => {
     const {
       target: { value }
     } = event;
-    setRemind(
-      // Splitter string hvis værdien er en kommasepareret liste
-      typeof value === "string" ? value.split(",") : value
-    );
+    setRemind([value]); // Sætter kun én værdi, ikke en liste
   };
 
   return (
@@ -180,7 +179,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
           <Select
             id="priority-select"
-            value={priority}
+            value={priority.toString()}
             onChange={handleChangePriority}
             input={<OutlinedInput label="Priority" />}>
             {priorityOptions.map((priority) => (
@@ -220,23 +219,12 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
         {/** Dropdown til valg af påmindelser */}
         <FormControl fullWidth>
-          <InputLabel id="remind-multiple-chip-label">Remind</InputLabel>
+          <InputLabel id="remind-label">Påmindelse</InputLabel>
           <Select
-            labelId="remind-multiple-chip-label"
-            id="remind-multiple-chip"
-            multiple
-            value={remind}
-            onChange={handleChangeRemind}
-            input={<OutlinedInput id="select-multiple-chip" label="Remind" />}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                {(selected as string[]).map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
-            )}
-            disabled={remind.includes("aldrig")} // Deaktiver påmindelse hvis "aldrig" er valgt
-          >
+            labelId="remind-label"
+            id="remind-select"
+            value={remind[0] || ""}
+            onChange={handleChangeRemind}>
             {remindOptions.map((remindOption) => (
               <MenuItem key={remindOption} value={remindOption}>
                 {remindOption}
