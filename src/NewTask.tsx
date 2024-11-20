@@ -19,47 +19,30 @@ interface NewTaskProps {
     priority: string,
     chooseDate: string,
     repeatTask: string,
-    remind: string[]
+    remind: string
   ) => void;
 }
 
 const NewTask = ({ addNewTask }: NewTaskProps) => {
   // State til at holde styr på opgave-ID (starter ved 1)
-  const [taskIdCounter, setTaskIdCounter] = useState(1);
-
-  // State til at holde værdier for hver opgave
   const [taskName, setTaskName] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [priority, setPriority] = useState("");
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
-  const [remind, setRemind] = useState<string[]>([]);
+  const [remind, setRemind] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   // Kategorier, prioriteter og valgmuligheder til gentagelse/påmindelser
   const categories = [
-    "Børn",
-    "Rengøring",
-    "Havearbejde",
-    "Madlavning",
-    "Indkøb",
-    "Reperationer",
-    "Transport",
-    "Kæledyr",
-    "Aftaler",
-    "Motion",
-    "Selvforkælelse",
-    "Andet"
+    "Børn", "Rengøring", "Havearbejde", "Madlavning", "Indkøb", 
+    "Reperationer", "Transport", "Kæledyr", "Aftaler", "Motion", 
+    "Selvforkælelse", "Andet"
   ];
   const priorityOptions = ["1", "2", "3"];
   const repeatOptions = [
-    "dagligt",
-    "hver anden dag",
-    "ugentligt",
-    "hver 2. uge",
-    "hver 3. uge",
-    "månedligt",
-    "aldrig"
+    "dagligt", "hver anden dag", "ugentligt", "hver 2. uge", 
+    "hver 3. uge", "månedligt", "aldrig"
   ];
   const remindOptions = ["morgen", "aften", "aldrig"];
 
@@ -75,7 +58,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
     // Opret ny opgave med det nuværende taskIdCounter som unikt ID
     const newTask = {
-      id: taskIdCounter,
+      id: Date.now(),  // Brug Date.now() til at generere et unikt ID
       taskName,
       categoryName,
       priority,
@@ -88,7 +71,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
     // Tilføj opgaven og opdater tælleren for næste opgave-ID
     addNewTask(
-      taskIdCounter,
+      newTask.id,
       taskName,
       categoryName,
       priority,
@@ -96,7 +79,6 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
       repeatTask,
       remind
     );
-    setTaskIdCounter(taskIdCounter + 1); // Øger ID-tælleren med 1
 
     // Nulstil felter efter tilføjelse af opgave
     setTaskName("");
@@ -104,7 +86,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     setPriority("");
     setChooseDate("");
     setRepeatTask("");
-    setRemind([]);
+    setRemind("");
     setError(null); // Fjerner fejlmeddelelsen
   };
 
@@ -123,13 +105,9 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     setRepeatTask(event.target.value);
   };
 
-  // Håndtering af ændringer for påmindelser
   // Håndtering af ændringer for påmindelser (kun én valgmulighed)
   const handleChangeRemind = (event: SelectChangeEvent<string>) => {
-    const {
-      target: { value }
-    } = event;
-    setRemind([value]); // Sætter kun én værdi, ikke en liste
+    setRemind(event.target.value); // Sætter kun én værdi, ikke en liste
   };
 
   return (
@@ -141,8 +119,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           {error}
         </Alert>
       )}
-      <Box
-        sx={{ minWidtt: 120, display: "flex", flexWrap: "wrap", gap: "8px" }}>
+      <Box sx={{ minWidth: 120, display: "flex", flexWrap: "wrap", gap: "8px" }}>
         {/** Inputfelt til opgavenavn */}
         <TextField
           label="Tilføj Ny Opgave"
@@ -204,36 +181,33 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             id="repeat-select"
             value={repeatTask}
             onChange={handleChangeRepeat}>
-            {repeatOptions.map((repeat) => (
-              <MenuItem key={repeat} value={repeat}>
-                {repeat}
+            {repeatOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        {/** Dropdown til valg af påmindelser */}
+        {/** Dropdown til valg af påmindelse */}
         <FormControl fullWidth>
           <InputLabel id="remind-label">Påmindelse</InputLabel>
           <Select
             labelId="remind-label"
             id="remind-select"
-            value={remind[0] || ""}
+            value={remind}
             onChange={handleChangeRemind}>
-            {remindOptions.map((remindOption) => (
-              <MenuItem key={remindOption} value={remindOption}>
-                {remindOption}
+            {remindOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
         {/** Knap til at tilføje ny opgave */}
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{ backgroundColor: themeColors.primaryColor }}>
-          Add Task
+        <Button variant="contained" type="submit">
+          Tilføj Opgave
         </Button>
       </Box>
     </form>
