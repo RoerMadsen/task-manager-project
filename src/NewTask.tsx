@@ -19,7 +19,7 @@ interface NewTaskProps {
     priority: string,
     chooseDate: string,
     repeatTask: string,
-    remind: string[]
+    remind: string
   ) => void;
 }
 
@@ -33,7 +33,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   const [priority, setPriority] = useState("");
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
-  const [remind, setRemind] = useState<string[]>([]);
+  const [remind, setRemind] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   // Kategorier, prioriteter og valgmuligheder til gentagelse/påmindelser
@@ -104,7 +104,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     setPriority("");
     setChooseDate("");
     setRepeatTask("");
-    setRemind([]);
+    setRemind("");
     setError(null); // Fjerner fejlmeddelelsen
   };
 
@@ -126,10 +126,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   // Håndtering af ændringer for påmindelser
   // Håndtering af ændringer for påmindelser (kun én valgmulighed)
   const handleChangeRemind = (event: SelectChangeEvent<string>) => {
-    const {
-      target: { value }
-    } = event;
-    setRemind([value]); // Sætter kun én værdi, ikke en liste
+    setRemind(event.target.value); // Sætter kun én værdi, ikke en liste
   };
 
   return (

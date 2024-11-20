@@ -42,7 +42,7 @@ const App = () => {
     priority: string,
     chooseDate: string,
     repeatTask: string,
-    remind: string[]
+    remind: string
   ) => {
     const newTask: Task = {
       id,
@@ -175,16 +175,8 @@ const App = () => {
               <TextField
                 label="Påmindelse"
                 name="remind"
-                value={currentTask.remind.join(", ")}
-                onChange={(e) =>
-                  setCurrentTask((prev) =>
-                    prev
-                      ? {
-                          ...prev,
-                          remind: e.target.value.split(",").map((s) => s.trim())
-                        }
-                      : null
-                  )
+                value={currentTask.remind}
+                onChange={handleRe}
                 }
                 fullWidth
                 margin="dense"

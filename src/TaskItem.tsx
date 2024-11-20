@@ -37,6 +37,7 @@ interface TaskItemProps {
   checked: boolean;
   onToggle: () => void;
   onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
+  onDeleteTask: (taskId: number) => void;
 }
 
 const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {

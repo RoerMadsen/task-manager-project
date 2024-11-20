@@ -5,6 +5,6 @@ export interface Task {
   priority: string;
   chooseDate: string;
   repeatTask: string;
-  remind: string[];
+  remind: string;
   isChecked?: boolean; // Tilføj denne egenskab
 }
