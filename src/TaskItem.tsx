@@ -21,6 +21,8 @@ import {
 import TextField from "@mui/material/TextField";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
+import DeleteIcon from "@mui/icons-material/Delete"; // Importer DeleteIcon
+
 
 interface Task {
   id: number;
@@ -37,9 +39,10 @@ interface TaskItemProps {
   checked: boolean;
   onToggle: () => void;
   onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
+  onDeleteTask: (taskId: number) => void;  // Funktion til at slette opgaven
 }
 
-const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
+const TaskItem = ({ task, checked, onToggle, onUpdateTask, onDeleteTask }: TaskItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
 
@@ -115,6 +118,7 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
     }));
   };
 
+
   return (
     <>
       <Accordion sx={{ mb: 1 }}>
@@ -143,6 +147,13 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
             <IconButton onClick={handleOpenDialog}>
               <SettingsIcon />
             </IconButton>
+
+            {/* Slet-ikon */}
+            <IconButton onClick={() => onDeleteTask(task.id)} color="error">
+              <DeleteIcon />
+            </IconButton>
+
+
           </Box>
         </AccordionSummary>
         <AccordionDetails>
