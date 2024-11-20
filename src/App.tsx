@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NewTask from "./NewTask";
+
 import TaskList from "./TaskList";
 import { Task } from "./types";
 
@@ -70,6 +71,7 @@ const App = () => {
     setChecked(updatedChecked);
   };
 
+
   // Funktion til at slette alle opgaver
   const handleDeleteAll = () => {
     setTasks([]); // Tøm listen med opgaver
@@ -104,6 +106,7 @@ const App = () => {
         onUpdateTask={onUpdateTask}
         onDeleteTask={onDeleteTask}
       />
+
     </div>
   );
 };

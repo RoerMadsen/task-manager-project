@@ -1,7 +1,9 @@
 import React from "react";
+
 import { IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importer skraldespandsikonet
 import TaskItem from "./TaskItem"; // Sørg for at importere TaskItem korrekt
+
 import { Task } from "./types"; // Sørg for at importere Task korrekt
 
 interface TaskListProps {
@@ -47,6 +49,7 @@ const TaskList: React.FC<TaskListProps> = ({
     groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
     return groups;
   }, {});
+
 
   // Funktion til at sortere opgaver, så de afkrydsede kommer nederst
   const sortTasksByChecked = (tasks: Task[]) => {
