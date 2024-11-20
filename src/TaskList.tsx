@@ -1,5 +1,17 @@
 import React from "react";
 
+import { Button } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Checkbox,
+  Box
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+
 import { Button, Typography, Box } from "@mui/material";
 import TaskItem from "./TaskItem";  // Sørg for at importere TaskItem korrekt
 import { Task } from "./types"; // Sørg for at importere Task korrekt
@@ -21,72 +33,42 @@ const TaskList: React.FC<TaskListProps> = ({
   onUpdateTask,
   onDeleteTask
 }) => {
-  // Definerer kategorilisten
-  const categories = [
-    "Børn",
-    "Rengøring",
-    "Havearbejde",
-    "Madlavning",
-    "Indkøb",
-    "Reperationer",
-    "Transport",
-    "Kæledyr",
-    "Aftaler",
-    "Motion",
-    "Selvforkælelse",
-    "Andet",
-  ];
-
-  // Gruppér opgaver efter kategori
-  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task, index) => {
-    if (!groups[task.category]) {
-      groups[task.category] = [];
-    }
-    groups[task.category].push({ ...task, isChecked: checked[index] });
-    return groups;
-  }, {});
+ 
+  // Function to clear all tasks
+  const handleClearAllTasks = () => {
+    // Assuming tasks are managed via a state function (e.g., setTasks)
+    setTasks([]);
+  };
 
   return (
     <div>
-      <h2>Dine Opgaver</h2>
-
-
-      {/* Knap til at slette alle opgaver */}
       <Button
         variant="contained"
         color="secondary"
-        onClick={handleDeleteAll}
-        sx={{ mb: 2 }}
+        onClick={handleClearAllTasks}
+        style={{ marginBottom: "1rem" }}
       >
-        Slet Alle Opgaver
+        Slet alle opgaver
       </Button>
+      {/* Resten af din eksisterende rendering-logik */}
+      {tasks.map((task, index) => (
+        <Accordion key={task.id}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Checkbox
+              checked={checked[index]}
+              onChange={() => handleToggle(index)}
+            />
+            <Typography>{task.taskName}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box>
+              {/* Task detaljer */}
+              <Typography>Kategori: {task.category}</Typography>
+              <Typography>Prioritet: {task.priority}</Typography>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
 
-      {/* Iterér over kategorilisten for at vise hver kategori som en sektion */}
-      {categories.map((category) => (
-        <div key={category} style={{ marginBottom: "16px" }}>
-          {/* Viser kun kategorier, der har opgaver */}
-          {groupedTasks[category] && groupedTasks[category].length > 0 && (
-
-            <>
-              {/* Kategoriens overskrift */}
-              <Typography variant="h6" gutterBottom>
-                {category}
-              </Typography>
-
-              {/* Vis opgaverne for hver kategori */}
-              {groupedTasks[category].map((task, index) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  checked={checked[index]}
-                  onToggle={() => handleToggle(index)}
-                  onUpdateTask={onUpdateTask}
-                  onDeleteTask={onDeleteTask} // Passér sletningsfunktionen
-                />
-              ))}
-            </>
-          )}
-        </div>
       ))}
     </div>
   );
