@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import NewTask from "./NewTask";
 import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Checkbox,
+  Box,
+  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -8,13 +15,14 @@ import {
   DialogActions,
   Button
 } from "@mui/material";
-import TaskList from "./TaskList";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 interface Task {
   id: number;
   taskName: string;
   category: string;
-  priority: number;
+  priority: string;
   chooseDate: string;
   repeatTask: string;
   remind: string[];
@@ -46,7 +54,7 @@ const App = () => {
     id: number,
     taskName: string,
     category: string,
-    priority: number,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -68,6 +76,12 @@ const App = () => {
     const updatedChecked = [...checked];
     updatedChecked[index] = !updatedChecked[index];
     setChecked(updatedChecked);
+  };
+
+  // Funktion til at åbne dialogboksen og initialisere den med opgavens data
+  const handleOpenDialog = (task: Task) => {
+    setCurrentTask(task);
+    setIsDialogOpen(true);
   };
 
   // Funktion til at lukke dialogboksen
@@ -96,13 +110,30 @@ const App = () => {
     }
   };
 
+  // Funktion til at slette alle opgaver
+  const handleClearAllTasks = () => {
+    setTasks([]);
+  };
+
   return (
     <div className="grid-container">
       <div className="grid-item header">
         <h1>The Mental Load</h1>
       </div>
 
-      {/** 
+      {/* Knap til at slette alle opgaver */}
+      <div className="grid-item">
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleClearAllTasks}
+          style={{ marginBottom: "1rem" }}
+        >
+          Slet alle opgaver
+        </Button>
+      </div>
+
+      {/* Opgaveliste */}
       <div className="grid-item">
         <h2>Dine Opgaver</h2>
         {tasks.map((task, index) => (
@@ -111,15 +142,17 @@ const App = () => {
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel-${task.id}-content`}
               id={`panel-${task.id}-header`}
-              onClick={(e) => e.stopPropagation()}>
+              onClick={(e) => e.stopPropagation()}
+            >
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   textAlign: "center",
                   width: "100%"
-                }}>
-                
+                }}
+              >
+                {/* Checkbox til at markere opgaven som færdig */}
                 <Checkbox
                   edge="start"
                   checked={checked[index]}
@@ -130,12 +163,13 @@ const App = () => {
                 <Typography sx={{ flexGrow: 1 }}>
                   <strong>{task.taskName}</strong>
                 </Typography>
-               
+                {/* Settings-ikon */}
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
                     handleOpenDialog(task);
-                  }}>
+                  }}
+                >
                   <SettingsIcon />
                 </IconButton>
               </Box>
@@ -162,23 +196,14 @@ const App = () => {
           </Accordion>
         ))}
       </div>
-      */}
 
-      <div className=" grid-item">
-        <h2>TaskList</h2>
-        <TaskList
-          tasks={tasks}
-          checked={checked}
-          handleToggle={handleToggle}
-          filters={{ category: "", date: "" }} // Standardværdi for filters
-        />
-      </div>
-
+      {/* Tilføj ny opgave */}
       <div className="grid-item">
         <h2>Tilføj Ny Opgave</h2>
         <NewTask addNewTask={addNewTask} />
       </div>
 
+      {/* Dialog til redigering */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Rediger Opgave</DialogTitle>
         <DialogContent>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@mui/material";
 import {
   Accordion,
   AccordionSummary,
@@ -32,91 +33,40 @@ const TaskList: React.FC<TaskListProps> = ({
   handleToggle,
   filters
 }) => {
-  // Gruppér opgaver efter kategori og sortér efter prioritet indenfor hver gruppe
-  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task) => {
-    if (!groups[task.category]) {
-      groups[task.category] = [];
-    }
-    groups[task.category].push(task);
-    // Sortér opgaverne i hver kategori efter prioritet (højere prioritet først)
-    groups[task.category].sort((a, b) => b.priority - a.priority);
-    return groups;
-  }, {});
-
-  // Filtrer opgaverne baseret på de valgte filtre
-  const filteredTasks = Object.keys(groupedTasks).reduce(
-    (result: Record<string, Task[]>, category) => {
-      if (
-        (filters.category && category !== filters.category) ||
-        (filters.date &&
-          !groupedTasks[category].some(
-            (task) => task.chooseDate === filters.date
-          ))
-      ) {
-        return result;
-      }
-      result[category] = groupedTasks[category];
-      return result;
-    },
-    {}
-  );
+  // Function to clear all tasks
+  const handleClearAllTasks = () => {
+    // Assuming tasks are managed via a state function (e.g., setTasks)
+    setTasks([]);
+  };
 
   return (
     <div>
-      <h2>Dine Opgaver</h2>
-      {/* Iterér over filtrerede og sorterede opgaver */}
-      {Object.keys(filteredTasks).map((category) => (
-        <div key={category} style={{ marginBottom: "16px" }}>
-          {/* Kategoriens overskrift */}
-          <Typography variant="h6" gutterBottom>
-            {category}
-          </Typography>
-          {filteredTasks[category].map((task, index) => (
-            <Accordion key={`${category}-${index}`} sx={{ mb: 1 }}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-${index}-content`}
-                id={`panel-${index}-header`}
-                onClick={(e) => e.stopPropagation()}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "center"
-                  }}>
-                  <Checkbox
-                    edge="start"
-                    checked={checked[index]}
-                    onChange={() => handleToggle(index)}
-                    inputProps={{ "aria-label": "Task completed" }}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <Typography>
-                    <strong>{task.taskName}</strong> (Prioritet: {task.priority}
-                    )
-                  </Typography>
-                </Box>
-              </AccordionSummary>
-
-              <AccordionDetails>
-                <div>
-                  <div>
-                    <strong>Kategori:</strong> {task.category}
-                  </div>
-                  <div>
-                    <strong>Hvornår:</strong> {task.chooseDate}
-                  </div>
-                  <div>
-                    <strong>Gentagelse:</strong> {task.repeatTask}
-                  </div>
-                  <div>
-                    <strong>Påmindelse:</strong> {task.remind.join(", ")}
-                  </div>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </div>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleClearAllTasks}
+        style={{ marginBottom: "1rem" }}
+      >
+        Slet alle opgaver
+      </Button>
+      {/* Resten af din eksisterende rendering-logik */}
+      {tasks.map((task, index) => (
+        <Accordion key={task.id}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Checkbox
+              checked={checked[index]}
+              onChange={() => handleToggle(index)}
+            />
+            <Typography>{task.taskName}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box>
+              {/* Task detaljer */}
+              <Typography>Kategori: {task.category}</Typography>
+              <Typography>Prioritet: {task.priority}</Typography>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
       ))}
     </div>
   );
