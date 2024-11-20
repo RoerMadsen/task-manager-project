@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Button } from "@mui/material";
 import {
   Accordion,
@@ -10,29 +11,29 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-interface Task {
-  id: number;
-  taskName: string;
-  category: string;
-  chooseDate: string;
-  repeatTask: string;
-  remind: string[];
-  priority: number;
-}
+
+import { Button, Typography, Box } from "@mui/material";
+import TaskItem from "./TaskItem";  // Sørg for at importere TaskItem korrekt
+import { Task } from "./types"; // Sørg for at importere Task korrekt
 
 interface TaskListProps {
   tasks: Task[];
   checked: boolean[];
   handleToggle: (index: number) => void;
-  filters: { category: string; date: string }; // Tilføjet filterprop
+  handleDeleteAll: () => void;
+  onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask: (taskId: number) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
   tasks,
   checked,
   handleToggle,
-  filters
+  handleDeleteAll,
+  onUpdateTask,
+  onDeleteTask
 }) => {
+ 
   // Function to clear all tasks
   const handleClearAllTasks = () => {
     // Assuming tasks are managed via a state function (e.g., setTasks)
@@ -67,6 +68,7 @@ const TaskList: React.FC<TaskListProps> = ({
             </Box>
           </AccordionDetails>
         </Accordion>
+
       ))}
     </div>
   );

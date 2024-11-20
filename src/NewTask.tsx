@@ -1,13 +1,11 @@
 import React, { useState, FormEvent } from "react";
 import TextField from "@mui/material/TextField";
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
@@ -18,7 +16,7 @@ interface NewTaskProps {
     id: number,
     taskName: string,
     category: string,
-    priority: number,
+    priority: string,
     chooseDate: string,
     repeatTask: string,
     remind: string[]
@@ -26,15 +24,13 @@ interface NewTaskProps {
 }
 
 const NewTask = ({ addNewTask }: NewTaskProps) => {
-  const theme = useTheme();
-
   // State til at holde styr på opgave-ID (starter ved 1)
   const [taskIdCounter, setTaskIdCounter] = useState(1);
 
   // State til at holde værdier for hver opgave
   const [taskName, setTaskName] = useState("");
   const [categoryName, setCategoryName] = useState("");
-  const [priority, setPriority] = useState(1);
+  const [priority, setPriority] = useState("");
   const [chooseDate, setChooseDate] = useState("");
   const [repeatTask, setRepeatTask] = useState("");
   const [remind, setRemind] = useState<string[]>([]);
@@ -55,7 +51,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     "Selvforkælelse",
     "Andet"
   ];
-  const priorityOptions = [1, 2, 3];
+  const priorityOptions = ["1", "2", "3"];
   const repeatOptions = [
     "dagligt",
     "hver anden dag",
@@ -105,7 +101,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
     // Nulstil felter efter tilføjelse af opgave
     setTaskName("");
     setCategoryName("");
-    setPriority(1);
+    setPriority("");
     setChooseDate("");
     setRepeatTask("");
     setRemind([]);
@@ -119,8 +115,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
 
   // Håndtering af ændringer for prioritet
   const handleChangePriority = (event: SelectChangeEvent<string>) => {
-    const selectedPriority = parseInt(event.target.value); // Konverter værdi til tal
-    setPriority(selectedPriority);
+    setPriority(event.target.value);
   };
 
   // Håndtering af ændringer for gentagelse
@@ -179,7 +174,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
           <Select
             id="priority-select"
-            value={priority.toString()}
+            value={priority}
             onChange={handleChangePriority}
             input={<OutlinedInput label="Priority" />}>
             {priorityOptions.map((priority) => (

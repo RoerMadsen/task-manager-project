@@ -73,6 +73,7 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
   // Åbn dialogboksen
   const handleOpenDialog = () => {
     setEditedTask(task); // Initialiser dialogen med aktuelle værdier
+
     setIsDialogOpen(true);
   };
 
@@ -116,7 +117,6 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
 
   return (
     <>
-      {/* Accordion til at vise opgaven */}
       <Accordion sx={{ mb: 1 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -138,6 +138,7 @@ const TaskItem = ({ task, checked, onToggle, onUpdateTask }: TaskItemProps) => {
             <Typography sx={{ flexGrow: 1 }}>
               <strong>{task.taskName}</strong>
             </Typography>
+
             {/* Settings-ikon */}
             <IconButton onClick={handleOpenDialog}>
               <SettingsIcon />

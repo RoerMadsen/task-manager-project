@@ -28,6 +28,7 @@ interface Task {
   remind: string[];
 }
 
+
 const App = () => {
   // Hent opgaver fra localStorage, hvis der er nogen gemt
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -111,15 +112,21 @@ const App = () => {
   };
 
   // Funktion til at slette alle opgaver
+  
   const handleClearAllTasks = () => {
     setTasks([]);
+
   };
 
   return (
     <div className="grid-container">
       <div className="grid-item header">
         <h1>The Mental Load</h1>
+        <IconButton onClick={handleDeleteAll} color="error">
+          <DeleteIcon />
+        </IconButton>
       </div>
+
 
       {/* Knap til at slette alle opgaver */}
       <div className="grid-item">
@@ -195,6 +202,7 @@ const App = () => {
             </AccordionDetails>
           </Accordion>
         ))}
+
       </div>
 
       {/* Tilføj ny opgave */}
