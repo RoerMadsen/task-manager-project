@@ -8,7 +8,6 @@ const App = () => {
   const [taskIdCounter, setTaskIdCounter] = useState<number>(1);
   const [checked, setChecked] = useState<boolean[]>([]);
 
-
   // Hent taskIdCounter fra localStorage
   useEffect(() => {
     const storedId = localStorage.getItem("taskIdCounter");
@@ -82,17 +81,23 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>Task Manager</h1>
-      <NewTask addNewTask={addNewTask} />
-      <TaskList
-        tasks={tasks}
-        checked={checked}
-        handleToggle={handleToggle}
-        handleDeleteAll={handleDeleteAll}
-        onUpdateTask={onUpdateTask}
-        onDeleteTask={onDeleteTask}
-      />
+    <div className="grid-container">
+      <div className="header">
+        <h1>Task Manager</h1>
+      </div>
+      <div className="grid-item">
+        <NewTask addNewTask={addNewTask} />
+      </div>
+      <div className="grid-item">
+        <TaskList
+          tasks={tasks}
+          checked={checked}
+          handleToggle={handleToggle}
+          handleDeleteAll={handleDeleteAll}
+          onUpdateTask={onUpdateTask}
+          onDeleteTask={onDeleteTask}
+        />
+      </div>
     </div>
   );
 };
