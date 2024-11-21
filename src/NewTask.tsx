@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -11,7 +11,6 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
 import { themeColors } from "./theme";
-import { FormHelperText } from "@mui/material";
 
 interface NewTaskProps {
   addNewTask: (
@@ -170,11 +169,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           fullWidth
           required
           aria-required="true"
-          aria-describedby="taskname-helper-text"
         />
-        <FormHelperText id="taskname-hepler-text">
-          Skriv opgavens navn
-        </FormHelperText>
         <FormControl fullWidth required>
           <InputLabel id="category-label">Vælg Kategori</InputLabel>
           <Select
@@ -215,11 +210,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           required
           InputLabelProps={{ shrink: true }}
           aria-required="true"
-          aria-describedby="date-helper-text"
         />
-        <FormHelperText id="date-helper-text">
-          Vælg den dato, opgaven skal udføres
-        </FormHelperText>
 
         <FormControl fullWidth>
           <InputLabel id="repeat-select-label">Repeat</InputLabel>
