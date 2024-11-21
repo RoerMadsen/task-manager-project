@@ -13,10 +13,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   SelectChangeEvent
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
@@ -115,68 +111,72 @@ const TaskItem = ({
     <Box
       sx={{
         display: "flex",
+        alignItems: "flex-start",
         justifyContent: "space-between",
         width: "100%"
       }}>
-      <Accordion>
-        <Tooltip title="Vis hele opgaven" placement="top-end">
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-              <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                <p className="bold">{task.taskName}</p>
-              </Typography>
-            </Box>
-          </AccordionSummary>
-        </Tooltip>
+      <Box sx={{ flex: 1, marginRight: 1 }}>
+        <Accordion>
+          <Tooltip title="Vis hele opgaven" placement="top-end">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+                <Typography variant="body1" sx={{ flexGrow: 1 }}>
+                  <p className="bold">{task.taskName}</p>
+                </Typography>
+              </Box>
+            </AccordionSummary>
+          </Tooltip>
 
-        <AccordionDetails>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%"
-            }}>
-            <Box>
-              <Typography>
-                <strong>Kategori: {task.category}</strong>
-              </Typography>
-              <Typography>Prioritet: {task.priority}</Typography>
-              <Typography>Gentagelse: {task.repeatTask}</Typography>
-              <Typography>Påmindelse: {task.remind}</Typography>
-            </Box>
+          <AccordionDetails>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%"
+              }}>
+              <Box>
+                <Typography>
+                  <strong>Kategori: {task.category}</strong>
+                </Typography>
+                <Typography>Prioritet: {task.priority}</Typography>
+                <Typography>Gentagelse: {task.repeatTask}</Typography>
+                <Typography>Påmindelse: {task.remind}</Typography>
+              </Box>
 
-            <Box>
-              <Tooltip title="Rediger opgave" placement="bottom">
-                <IconButton
-                  onClick={handleOpenSettingDialog}
-                  sx={{
-                    color: themeColors.primaryColor,
-                    "&:hover": { color: themeColors.primaryDark }
-                  }}>
-                  <SettingsIcon />
-                </IconButton>
-              </Tooltip>
+              <Box>
+                <Tooltip title="Rediger opgave" placement="bottom">
+                  <IconButton
+                    onClick={handleOpenSettingDialog}
+                    sx={{
+                      color: themeColors.primaryColor,
+                      "&:hover": { color: themeColors.primaryDark }
+                    }}>
+                    <SettingsIcon />
+                  </IconButton>
+                </Tooltip>
 
-              <Tooltip title="Slet opgave" placement="bottom">
-                <IconButton
-                  onClick={() => onDeleteTask(task.id)}
-                  sx={{
-                    color: themeColors.secondaryColor,
-                    "&:hover": { color: themeColors.darkColor }
-                  }}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
+                <Tooltip title="Slet opgave" placement="bottom">
+                  <IconButton
+                    onClick={() => onDeleteTask(task.id)}
+                    sx={{
+                      color: themeColors.secondaryColor,
+                      "&:hover": { color: themeColors.darkColor }
+                    }}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Box>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+
       {/* Checkbox udenfor Accordion */}
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between"
+          alignItems: "center"
         }}>
         <Checkbox checked={checked} onChange={onToggle} />
       </Box>

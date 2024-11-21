@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  IconButton,
-  Typography,
-  Checkbox,
-  ListItem,
-  ListItemText,
-  Tooltip
-} from "@mui/material";
+import { IconButton, Typography, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importer skraldespandsikonet
 import TaskItem from "./TaskItem"; // Sørg for at importere TaskItem korrekt
 import { Task } from "./types"; // Sørg for at importere Task korrekt

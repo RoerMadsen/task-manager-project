@@ -1,13 +1,29 @@
 Arbejdsfordeling:
 
 Amanda:
-NewTask.tsx, Sass partials, theme.ts
+NewTask.tsx, Sass partials, theme.ts, TaskFilter.tsx
 
 Shabana:
 TaskList.tsx, types.ts
 
 Samarbejde imellem Shabana og Amanda:
 App.tsx, TaskItem.tsx, Style.scss
+
+---
+
+Det vi ikke nåede at lave /få til at fungere:
+(som i kan se på arbejdsfordelingen har vi kun været 2 deltagende gruppemedlemmer, selvom vores tidplan var lavet ud fra at vi var 3.
+
+Vi har efterspurgt vejledning og hjælp undervejs og der er selvfølgelig forstålse for sygdom osv fra jeres side, men det har betydet at vi har brugt meget lang tid på "små" problemer og manglende forståelse.)
+
+Checked/isChecked flytter opgave til bunden af listen
+Opgaver sorteres i kategori
+
+opgaver gemmes i localstorage - det virkede indtil torsdag eftermiddag og vi kunne ikke få det til at virke igen
+
+filtrering af opgaver - vi fik startet på det (se TaskFilter) men vi endte med at bruge så lang tid på checked funktionen at vi ikke nåede mere.
+
+---
 
 Installation og Opsætning
 
