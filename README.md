@@ -12,8 +12,8 @@ App.tsx, TaskItem.tsx, Style.scss
 ---
 
 Det vi ikke nåede at lave /få til at fungere:
-(som i kan se på arbejdsfordelingen har vi kun været 2 deltagende gruppemedlemmer, selvom vores tidplan var lavet ud fra at vi var 3.
 
+(som i kan se på arbejdsfordelingen har vi kun været 2 deltagende gruppemedlemmer, selvom vores tidplan var lavet ud fra at vi var 3.
 Vi har efterspurgt vejledning og hjælp undervejs og der er selvfølgelig forstålse for sygdom osv fra jeres side, men det har betydet at vi har brugt meget lang tid på "små" problemer og manglende forståelse.)
 
 Checked/isChecked flytter opgave til bunden af listen
