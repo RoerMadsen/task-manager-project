@@ -21,7 +21,7 @@ import {
 import TextField from "@mui/material/TextField";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from "@mui/icons-material/Delete"; // Importer DeleteIcon
 import { themeColors } from "./theme";
 
 interface Task {
@@ -31,22 +31,23 @@ interface Task {
   priority: string;
   chooseDate: string;
   repeatTask: string;
-  remind: string;
+  remind: string; // Ændret til en enkelt værdi i stedet for et array
 }
 
 interface TaskItemProps {
   task: Task;
   checked: boolean;
   onToggle: () => void;
-  onUpdateTask: (updatedTask: Task) => void;
-  onDeleteTask: (taskId: number) => void;
+  onUpdateTask: (updatedTask: Task) => void; // Funktion til at opdatere opgaven
+  onDeleteTask: (taskId: number) => void; // Funktion til at slette opgaven
 }
 
 const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
   const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editedTask, setEditedTask] = useState(task);
+  const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
 
+  // Kategorier, prioriteter og valgmuligheder til gentagelse/påmindelser
   const categories = [
     "Børn",
     "Rengøring",
@@ -71,25 +72,29 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
     "månedligt",
     "aldrig"
   ];
-  const remindOptions = ["morgen", "aften", "aldrig"];
+  const remindOptions = ["morgen", "aften", "aldrig"]; // Påmindelsesmuligheder
 
+  // Åbn dialogboksen
   const handleOpenSettingDialog = () => {
-    setEditedTask(task);
+    setEditedTask(task); // Initialiser dialogen med aktuelle værdier
+
     setIsSettingDialogOpen(true);
   };
 
+  // Luk dialogboksen
   const handleCloseSettingDialog = () => {
     setIsSettingDialogOpen(false);
   };
 
+  //handle åben delete dialogboks
   const handleOpenDeleteDialog = () => {
     setIsDeleteDialogOpen(true);
   };
-
   const handleCloseDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
   };
 
+  // Håndter ændringer i formularen
   const handleChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setEditedTask((prev) => ({
@@ -108,15 +113,17 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
     }));
   };
 
+  // Opdater opgaven
   const handleUpdateTask = () => {
-    onUpdateTask(editedTask);
-    handleCloseSettingDialog();
+    onUpdateTask(editedTask); // Send opdaterede værdier tilbage til parent
+    handleCloseSettingDialog(); // Luk dialogen
   };
 
+  // Håndtering af ændringer for påmindelser (enkelt valg)
   const handleChangeRemind = (e: SelectChangeEvent<string>) => {
     setEditedTask((prev) => ({
       ...prev,
-      remind: e.target.value
+      remind: e.target.value // Opdaterer kun én påmindelse
     }));
   };
 
@@ -156,6 +163,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             </Box>
 
             <Box>
+              {/** ret opgave */}
               <Tooltip
                 title="Rediger opgave"
                 placement="bottom"
@@ -173,6 +181,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
                 </IconButton>
               </Tooltip>
 
+              {/** Slet enkelt opgave */}
               <Tooltip
                 title="Slet opgave"
                 placement="bottom"
@@ -198,8 +207,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
       <Dialog
         open={isSettingDialogOpen}
         onClose={handleCloseSettingDialog}
-        aria-labelledby="rediger-opgave-dialog-title"
-        aria-describedby="rediger-opgave-dialog-description">
+        aria-label="Rediger opgave">
         <DialogTitle id="rediger-opgave-dialog-title">
           Rediger Opgave
         </DialogTitle>
@@ -211,21 +219,16 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             onChange={handleTextFieldChange}
             fullWidth
             margin="dense"
-            aria-label="Opgavenavn"
           />
 
-          <FormControl
-            fullWidth
-            margin="dense"
-            required
-            aria-label="Vælg Kategori">
+          {/* Dropdown til valg af kategori */}
+          <FormControl fullWidth margin="dense" required>
             <InputLabel id="category-label">Vælg Kategori</InputLabel>
             <Select
               labelId="category-label"
               value={editedTask.category}
               name="category"
-              onChange={handleChange}
-              aria-label="Kategori">
+              onChange={handleChange}>
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
                   {category}
@@ -234,18 +237,14 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             </Select>
           </FormControl>
 
-          <FormControl
-            fullWidth
-            margin="dense"
-            required
-            aria-label="Vælg Prioritet">
+          {/* Dropdown til valg af prioritet */}
+          <FormControl fullWidth margin="dense" required>
             <InputLabel id="priority-label">Vælg Prioritet</InputLabel>
             <Select
               labelId="priority-label"
               value={editedTask.priority}
               name="priority"
-              onChange={handleChange}
-              aria-label="Prioritet">
+              onChange={handleChange}>
               {priorityOptions.map((priority) => (
                 <MenuItem key={priority} value={priority}>
                   {priority}
@@ -254,6 +253,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             </Select>
           </FormControl>
 
+          {/* Inputfelt til valg af dato */}
           <TextField
             label="Hvornår"
             name="chooseDate"
@@ -263,17 +263,16 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             margin="dense"
             type="date"
             InputLabelProps={{ shrink: true }}
-            aria-label="Vælg dato"
           />
 
-          <FormControl fullWidth margin="dense" aria-label="Gentagelse">
+          {/* Dropdown til valg af gentagelse */}
+          <FormControl fullWidth margin="dense">
             <InputLabel id="repeat-select-label">Gentagelse</InputLabel>
             <Select
               labelId="repeat-select-label"
               value={editedTask.repeatTask}
               name="repeatTask"
-              onChange={handleChange}
-              aria-label="Gentagelse">
+              onChange={handleChange}>
               {repeatOptions.map((repeat) => (
                 <MenuItem key={repeat} value={repeat}>
                   {repeat}
@@ -282,14 +281,14 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             </Select>
           </FormControl>
 
-          <FormControl fullWidth margin="dense" aria-label="Påmindelse">
+          {/* Dropdown til valg af påmindelser (enkelt valg) */}
+          <FormControl fullWidth margin="dense">
             <InputLabel id="remind-select-label">Påmindelse</InputLabel>
             <Select
               labelId="remind-select-label"
               value={editedTask.remind}
               name="remind"
-              onChange={handleChangeRemind}
-              aria-label="Påmindelse">
+              onChange={handleChangeRemind}>
               {remindOptions.map((remindOption) => (
                 <MenuItem key={remindOption} value={remindOption}>
                   {remindOption}
@@ -300,44 +299,78 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
         </DialogContent>
         <DialogActions>
           <Button
+            aria-label="annuller redigering af opgaven"
             onClick={handleCloseSettingDialog}
-            color="primary"
-            aria-label="Luk">
-            Luk
+            sx={{
+              backgroundColor: themeColors.secondaryColor,
+              color: themeColors.lightColor,
+              "&:hover": {
+                backgroundColor: themeColors.darkColor,
+                color: themeColors.lightColor
+              }
+            }}>
+            Annuller
           </Button>
           <Button
+            aria-label="Gem opdateret opgave"
             onClick={handleUpdateTask}
-            color="primary"
-            aria-label="Opdater">
-            Opdater
+            variant="contained"
+            sx={{
+              backgroundColor: themeColors.primaryColor,
+              "&:hover": {
+                backgroundColor: themeColors.primaryDark,
+                color: themeColors.lightColor
+              }
+            }}>
+            Opdater Opgave
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Dialog til sletning af opgave */}
+      {/* Dialog til bekræftelse af sletning */}
       <Dialog
         open={isDeleteDialogOpen}
         onClose={handleCloseDeleteDialog}
-        aria-labelledby="delete-opgave-dialog-title"
-        aria-describedby="delete-opgave-dialog-description">
-        <DialogTitle id="delete-opgave-dialog-title">
-          Er du sikker på, at du vil slette denne opgave?
+        aria-labelledby="slet-opgave-dialog-title"
+        aria-describedby="slet-opgave-dialog-description">
+        <DialogTitle id="slet-opgave-dialog-title">
+          Bekræft Sletning
         </DialogTitle>
+        <DialogContent id="slet-opgave-dialog-description">
+          <Typography>
+            Er du sikker på, at du vil slette opgaven{" "}
+            <strong>{task.taskName}</strong>?
+          </Typography>
+        </DialogContent>
         <DialogActions>
           <Button
+            aria-label="nej, behold opgaven"
             onClick={handleCloseDeleteDialog}
-            color="primary"
-            aria-label="Annuller">
-            Anuller
+            sx={{
+              backgroundColor: themeColors.primaryColor,
+              color: themeColors.lightColor,
+              "&:hover": {
+                backgroundColor: themeColors.primaryDark,
+                color: themeColors.lightColor
+              }
+            }}>
+            Nej
           </Button>
           <Button
+            aria-label="ja, slet opgaven"
             onClick={() => {
-              onDeleteTask(task.id);
-              handleCloseDeleteDialog();
+              onDeleteTask(task.id); // Bruger onDeleteTask fra App.tsx
+              handleCloseDeleteDialog(); // Luk dialogen
             }}
-            color="secondary"
-            aria-label="Slet opgave">
-            Slet
+            variant="contained"
+            sx={{
+              backgroundColor: themeColors.secondaryColor,
+              "&:hover": {
+                backgroundColor: themeColors.darkColor,
+                color: themeColors.lightColor
+              }
+            }}>
+            Ja
           </Button>
         </DialogActions>
       </Dialog>
