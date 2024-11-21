@@ -8,6 +8,7 @@ const App = () => {
   const [taskIdCounter, setTaskIdCounter] = useState<number>(1);
   const [checked, setChecked] = useState<boolean[]>([]);
 
+
   // Hent taskIdCounter fra localStorage
   useEffect(() => {
     const storedId = localStorage.getItem("taskIdCounter");
@@ -27,21 +28,13 @@ const App = () => {
     if (storedTasks) {
       const parsedTasks = JSON.parse(storedTasks);
       setTasks(parsedTasks);
-
-      // Synkroniser checked array med opgaverne
-      if (storedChecked) {
-        setChecked(JSON.parse(storedChecked));
-      } else {
-        setChecked(new Array(parsedTasks.length).fill(false)); // Hvis der ikke findes checked-tilstand, start med false
-      }
     }
   }, []);
 
-  // Gem opgaver og checked-tilstand til localStorage
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-    localStorage.setItem("checked", JSON.stringify(checked));
-  }, [tasks, checked]);
+    setChecked(new Array(tasks.length).fill(false)); // Synkroniser checked med tasks
+  }, [tasks]);
 
   const addNewTask = (
     id: number,
@@ -62,7 +55,6 @@ const App = () => {
       remind
     };
     setTasks((prevTasks) => [...prevTasks, newTask]);
-    setChecked((prevChecked) => [...prevChecked, false]); // Tilføj en ny checked værdi for den nye opgave
     setTaskIdCounter(id + 1);
   };
 
@@ -74,9 +66,7 @@ const App = () => {
 
   const handleDeleteAll = () => {
     setTasks([]);
-    setChecked([]);
     localStorage.removeItem("tasks");
-    localStorage.removeItem("checked");
   };
 
   const onUpdateTask = (updatedTask: Task) => {
@@ -89,31 +79,20 @@ const App = () => {
   const onDeleteTask = (taskId: number) => {
     const updatedTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(updatedTasks);
-    // Fjern den tilhørende checked-tilstand
-    const updatedChecked = checked.filter(
-      (_, index) => tasks[index].id !== taskId
-    );
-    setChecked(updatedChecked);
   };
 
   return (
-    <div className="grid-container">
-      <div className="header">
-        <h1>Task Manager</h1>
-      </div>
-      <div className="grid-item">
-        <NewTask addNewTask={addNewTask} />
-      </div>
-      <div className="grid-item">
-        <TaskList
-          tasks={tasks}
-          checked={checked}
-          handleToggle={handleToggle}
-          handleDeleteAll={handleDeleteAll}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-        />
-      </div>
+    <div>
+      <h1>Task Manager</h1>
+      <NewTask addNewTask={addNewTask} />
+      <TaskList
+        tasks={tasks}
+        checked={checked}
+        handleToggle={handleToggle}
+        handleDeleteAll={handleDeleteAll}
+        onUpdateTask={onUpdateTask}
+        onDeleteTask={onDeleteTask}
+      />
     </div>
   );
 };
