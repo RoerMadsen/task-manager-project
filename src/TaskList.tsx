@@ -1,10 +1,11 @@
 import React from "react";
 
-import { IconButton, Typography } from "@mui/material";
+import { IconButton, Typography, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importer skraldespandsikonet
 import TaskItem from "./TaskItem"; // Sørg for at importere TaskItem korrekt
 
 import { Task } from "./types"; // Sørg for at importere Task korrekt
+import { themeColors } from "./theme";
 
 interface TaskListProps {
   tasks: Task[];
@@ -40,16 +41,13 @@ const TaskList: React.FC<TaskListProps> = ({
   ];
 
   // Gruppér opgaver efter kategori
-  const groupedTasks = tasks.reduce(
-    (groups: Record<string, Task[]>, task, index) => {
-      if (!groups[task.category]) {
-        groups[task.category] = [];
-      }
-      groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
-      return groups;
-    },
-    {}
-  );
+  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task) => {
+    if (!groups[task.category]) {
+      groups[task.category] = [];
+    }
+    groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
+    return groups;
+  }, {});
 
   // Funktion til at sortere opgaver, så de afkrydsede kommer nederst
   const sortTasksByChecked = (tasks: Task[]) => {
@@ -62,7 +60,7 @@ const TaskList: React.FC<TaskListProps> = ({
   };
 
   return (
-    <div>
+    <>
       <div
         style={{
           display: "flex",
@@ -73,12 +71,23 @@ const TaskList: React.FC<TaskListProps> = ({
         <h2>Dine Opgaver</h2>
 
         {/* Skraldespandsikon til at slette alle opgaver */}
-        <IconButton
-          color="secondary"
-          onClick={handleDeleteAll}
+        <Tooltip
+          title="Slet alle opgaver"
+          placement="left"
           aria-label="Slet alle opgaver">
-          <DeleteIcon />
-        </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={handleDeleteAll}
+            aria-label="Slet alle opgaver"
+            sx={{
+              color: themeColors.secondaryColor,
+              "&:hover": {
+                color: themeColors.darkColor
+              }
+            }}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       </div>
 
       {/* Iterér over kategorilisten for at vise hver kategori som en sektion */}
@@ -107,7 +116,7 @@ const TaskList: React.FC<TaskListProps> = ({
           )}
         </div>
       ))}
-    </div>
+    </>
   );
 };
 

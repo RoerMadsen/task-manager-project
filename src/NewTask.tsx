@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, FormEvent } from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -11,6 +11,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
 import { themeColors } from "./theme";
+import { FormHelperText } from "@mui/material";
 
 interface NewTaskProps {
   addNewTask: (
@@ -125,7 +126,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
   return (
     <form onSubmit={handleSubmit}>
       {error && (
-        <Alert severity="warning">
+        <Alert severity="warning" aria-live="assertive">
           <AlertTitle>Udfyld felterne for at fortsætte</AlertTitle>
           {error}
         </Alert>
@@ -142,6 +143,7 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
         <Alert
           severity="success"
           variant="outlined"
+          aria-live="assertive"
           sx={{
             color: themeColors.primaryColor,
             borderColor: themeColors.primaryColor,
@@ -153,14 +155,26 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
       </Backdrop>
 
       <Box
-        sx={{ minWidth: 120, display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        sx={{
+          minWidth: 120,
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "8px",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
         <TextField
           label="Tilføj Ny Opgave"
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
           fullWidth
           required
+          aria-required="true"
+          aria-describedby="taskname-helper-text"
         />
+        <FormHelperText id="taskname-hepler-text">
+          Skriv opgavens navn
+        </FormHelperText>
         <FormControl fullWidth required>
           <InputLabel id="category-label">Vælg Kategori</InputLabel>
           <Select
@@ -168,7 +182,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             id="category-select"
             value={categoryName}
             onChange={handleChangeCategory}
-            input={<OutlinedInput label="Category" />}>
+            input={<OutlinedInput label="Category" />}
+            aria-labelledby="category-label">
             {categories.map((category) => (
               <MenuItem key={category} value={category}>
                 {category}
@@ -182,7 +197,8 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             id="priority-select"
             value={priority}
             onChange={handleChangePriority}
-            input={<OutlinedInput label="Priority" />}>
+            input={<OutlinedInput label="Priority" />}
+            aria-labelledby="priority-label">
             {priorityOptions.map((priority) => (
               <MenuItem key={priority} value={priority}>
                 {priority}
@@ -198,13 +214,20 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
           fullWidth
           required
           InputLabelProps={{ shrink: true }}
+          aria-required="true"
+          aria-describedby="date-helper-text"
         />
+        <FormHelperText id="date-helper-text">
+          Vælg den dato, opgaven skal udføres
+        </FormHelperText>
+
         <FormControl fullWidth>
           <InputLabel id="repeat-select-label">Repeat</InputLabel>
           <Select
             labelId="repeat-select-label"
             id="repeat-select"
             value={repeatTask}
+            aria-labelledby="repeat-select-label"
             onChange={handleChangeRepeat}>
             {repeatOptions.map((option) => (
               <MenuItem key={option} value={option}>
@@ -213,12 +236,14 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             ))}
           </Select>
         </FormControl>
+
         <FormControl fullWidth>
           <InputLabel id="remind-label">Påmindelse</InputLabel>
           <Select
             labelId="remind-label"
             id="remind-select"
             value={remind}
+            aria-labelledby="remind-label"
             onChange={handleChangeRemind}>
             {remindOptions.map((option) => (
               <MenuItem key={option} value={option}>
@@ -227,7 +252,18 @@ const NewTask = ({ addNewTask }: NewTaskProps) => {
             ))}
           </Select>
         </FormControl>
-        <Button variant="contained" type="submit">
+
+        <Button
+          variant="contained"
+          type="submit"
+          aria-label="Tilføj ny opgave"
+          sx={{
+            backgroundColor: themeColors.primaryColor,
+            "&:hover": {
+              backgroundColor: themeColors.primaryDark,
+              color: themeColors.lightColor
+            }
+          }}>
           Tilføj Opgave
         </Button>
       </Box>
