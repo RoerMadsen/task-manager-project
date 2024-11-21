@@ -4,8 +4,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
-  Checkbox,
   Box,
+  Tooltip,
   IconButton,
   Dialog,
   DialogTitle,
@@ -42,13 +42,7 @@ interface TaskItemProps {
   onDeleteTask: (taskId: number) => void; // Funktion til at slette opgaven
 }
 
-const TaskItem = ({
-  task,
-  checked,
-  onToggle,
-  onUpdateTask,
-  onDeleteTask
-}: TaskItemProps) => {
+const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
   const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
@@ -136,16 +130,21 @@ const TaskItem = ({
   return (
     <>
       <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header">
-          <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-            <Typography variant="body1" sx={{ flexGrow: 1 }}>
-              <strong>{task.taskName}</strong>
-            </Typography>
-          </Box>
-        </AccordionSummary>
+        <Tooltip
+          title="Vis hele opgaven"
+          placement="top-end"
+          aria-label="Vis hele opgaven">
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header">
+            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+              <Typography variant="body1" sx={{ flexGrow: 1 }}>
+                <p className="bold">{task.taskName}</p>
+              </Typography>
+            </Box>
+          </AccordionSummary>
+        </Tooltip>
 
         <AccordionDetails>
           <Box
@@ -155,28 +154,64 @@ const TaskItem = ({
               width: "100%"
             }}>
             <Box>
-              <Typography>{task.category}</Typography>
+              <Typography>
+                <strong>Kategori: {task.category}</strong>
+              </Typography>
               <Typography>Prioritet: {task.priority}</Typography>
               <Typography>Gentagelse: {task.repeatTask}</Typography>
               <Typography>Påmindelse: {task.remind}</Typography>
             </Box>
 
             <Box>
-              <IconButton onClick={handleOpenSettingDialog}>
-                <SettingsIcon />
-              </IconButton>
-              <IconButton onClick={handleOpenDeleteDialog} color="error">
-                <DeleteIcon />
-              </IconButton>
+              {/** ret opgave */}
+              <Tooltip
+                title="Rediger opgave"
+                placement="bottom"
+                aria-label="Rediger opgave">
+                <IconButton
+                  aria-label="Rediger opgave"
+                  onClick={handleOpenSettingDialog}
+                  sx={{
+                    color: themeColors.primaryColor,
+                    "&:hover": {
+                      color: themeColors.primaryDark
+                    }
+                  }}>
+                  <SettingsIcon />
+                </IconButton>
+              </Tooltip>
+
+              {/** Slet enkelt opgave */}
+              <Tooltip
+                title="Slet opgave"
+                placement="bottom"
+                aria-label="Slet opgave">
+                <IconButton
+                  aria-label="Slet opgave"
+                  onClick={handleOpenDeleteDialog}
+                  sx={{
+                    color: themeColors.secondaryColor,
+                    "&:hover": {
+                      color: themeColors.darkColor
+                    }
+                  }}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
         </AccordionDetails>
       </Accordion>
 
       {/* Dialog til redigering af opgave */}
-      <Dialog open={isSettingDialogOpen} onClose={handleCloseSettingDialog}>
-        <DialogTitle>Rediger Opgave</DialogTitle>
-        <DialogContent>
+      <Dialog
+        open={isSettingDialogOpen}
+        onClose={handleCloseSettingDialog}
+        aria-label="Rediger opgave">
+        <DialogTitle id="rediger-opgave-dialog-title">
+          Rediger Opgave
+        </DialogTitle>
+        <DialogContent id="rediger-opgave-dialog-description">
           <TextField
             label="Opgavenavn"
             name="taskName"
@@ -185,36 +220,6 @@ const TaskItem = ({
             fullWidth
             margin="dense"
           />
-
-          {/* Dialog til bekræftelse af sletning */}
-          <Dialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog}>
-            <DialogTitle>Bekræft Sletning</DialogTitle>
-            <DialogContent>
-              <Typography>
-                Er du sikker på, at du vil slette opgaven{" "}
-                <strong>{task.taskName}</strong>?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={handleCloseDeleteDialog}
-                sx={{ color: themeColors.secondaryColor }}>
-                Nej
-              </Button>
-              <Button
-                onClick={() => {
-                  onDeleteTask(task.id); // Bruger onDeleteTask fra App.tsx
-                  handleCloseDeleteDialog(); // Luk dialogen
-                }}
-                variant="contained"
-                sx={{
-                  backgroundColor: themeColors.secondaryColor,
-                  color: "#fff"
-                }}>
-                Ja
-              </Button>
-            </DialogActions>
-          </Dialog>
 
           {/* Dropdown til valg af kategori */}
           <FormControl fullWidth margin="dense" required>
@@ -293,9 +298,79 @@ const TaskItem = ({
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseSettingDialog}>Annuller</Button>
-          <Button onClick={handleUpdateTask} variant="contained">
+          <Button
+            aria-label="annuller redigering af opgaven"
+            onClick={handleCloseSettingDialog}
+            sx={{
+              backgroundColor: themeColors.secondaryColor,
+              color: themeColors.lightColor,
+              "&:hover": {
+                backgroundColor: themeColors.darkColor,
+                color: themeColors.lightColor
+              }
+            }}>
+            Annuller
+          </Button>
+          <Button
+            aria-label="Gem opdateret opgave"
+            onClick={handleUpdateTask}
+            variant="contained"
+            sx={{
+              backgroundColor: themeColors.primaryColor,
+              "&:hover": {
+                backgroundColor: themeColors.primaryDark,
+                color: themeColors.lightColor
+              }
+            }}>
             Opdater Opgave
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog til bekræftelse af sletning */}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="slet-opgave-dialog-title"
+        aria-describedby="slet-opgave-dialog-description">
+        <DialogTitle id="slet-opgave-dialog-title">
+          Bekræft Sletning
+        </DialogTitle>
+        <DialogContent id="slet-opgave-dialog-description">
+          <Typography>
+            Er du sikker på, at du vil slette opgaven{" "}
+            <strong>{task.taskName}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            aria-label="nej, behold opgaven"
+            onClick={handleCloseDeleteDialog}
+            sx={{
+              backgroundColor: themeColors.primaryColor,
+              color: themeColors.lightColor,
+              "&:hover": {
+                backgroundColor: themeColors.primaryDark,
+                color: themeColors.lightColor
+              }
+            }}>
+            Nej
+          </Button>
+          <Button
+            aria-label="ja, slet opgaven"
+            onClick={() => {
+              onDeleteTask(task.id); // Bruger onDeleteTask fra App.tsx
+              handleCloseDeleteDialog(); // Luk dialogen
+            }}
+            variant="contained"
+            sx={{
+              backgroundColor: themeColors.secondaryColor,
+              "&:hover": {
+                backgroundColor: themeColors.darkColor,
+                color: themeColors.lightColor
+              }
+            }}>
+            Ja
           </Button>
         </DialogActions>
       </Dialog>
