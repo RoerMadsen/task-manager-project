@@ -22,9 +22,7 @@ const TaskList: React.FC<TaskListProps> = ({
   handleDeleteAll,
   onUpdateTask,
   onDeleteTask
-}
-
-) => {
+}) => {
   // Definerer kategorilisten
   const categories = [
     "Børn",
@@ -38,18 +36,20 @@ const TaskList: React.FC<TaskListProps> = ({
     "Aftaler",
     "Motion",
     "Selvforkælelse",
-    "Andet",
+    "Andet"
   ];
 
   // Gruppér opgaver efter kategori
-  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task, index) => {
-    if (!groups[task.category]) {
-      groups[task.category] = [];
-    }
-    groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
-    return groups;
-  }, {});
-
+  const groupedTasks = tasks.reduce(
+    (groups: Record<string, Task[]>, task, index) => {
+      if (!groups[task.category]) {
+        groups[task.category] = [];
+      }
+      groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
+      return groups;
+    },
+    {}
+  );
 
   // Funktion til at sortere opgaver, så de afkrydsede kommer nederst
   const sortTasksByChecked = (tasks: Task[]) => {
@@ -61,19 +61,22 @@ const TaskList: React.FC<TaskListProps> = ({
     });
   };
 
-
-
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "16px"
+        }}>
         <h2>Dine Opgaver</h2>
 
         {/* Skraldespandsikon til at slette alle opgaver */}
         <IconButton
           color="secondary"
           onClick={handleDeleteAll}
-          aria-label="Slet alle opgaver"
-        >
+          aria-label="Slet alle opgaver">
           <DeleteIcon />
         </IconButton>
       </div>
