@@ -1,8 +1,9 @@
 import React from "react";
-import { IconButton, Typography, Checkbox, ListItem, ListItemText } from "@mui/material";
+import { IconButton, Typography, Checkbox, ListItem, ListItemText, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importer skraldespandsikonet
 import TaskItem from "./TaskItem"; // Sørg for at importere TaskItem korrekt
 import { Task } from "./types"; // Sørg for at importere Task korrekt
+import { themeColors } from "./theme";
 
 interface TaskListProps {
   tasks: Task[];
@@ -21,7 +22,6 @@ const TaskList: React.FC<TaskListProps> = ({
   onUpdateTask,
   onDeleteTask
 }: TaskListProps) => {
-
 
   // Definerer kategorilisten
   const categories = [
@@ -51,6 +51,7 @@ const TaskList: React.FC<TaskListProps> = ({
     {}
   );
 
+
   // Funktion til at sortere opgaver, så de afkrydsede kommer nederst
   const sortTasksByChecked = (tasks: Task[]) => {
     return tasks.sort((a, b) => {
@@ -62,7 +63,7 @@ const TaskList: React.FC<TaskListProps> = ({
   };
 
   return (
-    <div>
+    <>
       <div
         style={{
           display: "flex",
@@ -73,12 +74,23 @@ const TaskList: React.FC<TaskListProps> = ({
         <h2>Dine Opgaver</h2>
 
         {/* Skraldespandsikon til at slette alle opgaver */}
-        <IconButton
-          color="secondary"
-          onClick={handleDeleteAll}
+        <Tooltip
+          title="Slet alle opgaver"
+          placement="left"
           aria-label="Slet alle opgaver">
-          <DeleteIcon />
-        </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={handleDeleteAll}
+            aria-label="Slet alle opgaver"
+            sx={{
+              color: themeColors.secondaryColor,
+              "&:hover": {
+                color: themeColors.darkColor
+              }
+            }}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       </div>
 
   
@@ -101,18 +113,13 @@ const TaskList: React.FC<TaskListProps> = ({
                   checked={checked[index]} // Bruger checked status fra arrayet
                   onChange={() => handleToggle(index)} // Håndterer toggling af checkbox
                 />
-                <ListItemText primary={task.taskName} secondary={task.category} />
-                <IconButton onClick={() => onDeleteTask(task.id)} color="secondary" aria-label="delete task">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItem>
-            ))}
-          </>
-        )}
-      </div>
-    ))}
-  </div>
-);
+              ))}
+            </>
+          )}
+        </div>
+      ))}
+    </>
+  );
 };
 
 export default TaskList;

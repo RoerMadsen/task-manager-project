@@ -8,17 +8,23 @@ const App = () => {
   const [taskIdCounter, setTaskIdCounter] = useState<number>(1);
   const [checked, setChecked] = useState<boolean[]>([]);
 
+
+  // Hent taskIdCounter fra localStorage
   useEffect(() => {
     const storedId = localStorage.getItem("taskIdCounter");
     if (storedId) setTaskIdCounter(parseInt(storedId, 10));
   }, []);
 
+  // Gem taskIdCounter til localStorage
   useEffect(() => {
     localStorage.setItem("taskIdCounter", taskIdCounter.toString());
   }, [taskIdCounter]);
 
+  // Hent opgaver og checked-tilstand fra localStorage
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
+    const storedChecked = localStorage.getItem("checked");
+
     if (storedTasks) {
       const parsedTasks = JSON.parse(storedTasks);
       setTasks(parsedTasks);
