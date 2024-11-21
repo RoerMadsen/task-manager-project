@@ -1,16 +1,14 @@
 import React from "react";
-
-import { IconButton, Typography, Tooltip } from "@mui/material";
+import { IconButton, Typography, Checkbox, ListItem, ListItemText, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importer skraldespandsikonet
 import TaskItem from "./TaskItem"; // Sørg for at importere TaskItem korrekt
-
 import { Task } from "./types"; // Sørg for at importere Task korrekt
 import { themeColors } from "./theme";
 
 interface TaskListProps {
   tasks: Task[];
   checked: boolean[];
-  handleToggle: (taskId: number) => void;
+  handleToggle: (index: number) => void;
   handleDeleteAll: () => void;
   onUpdateTask: (updatedTask: Task) => void;
   onDeleteTask: (taskId: number) => void;
@@ -23,7 +21,8 @@ const TaskList: React.FC<TaskListProps> = ({
   handleDeleteAll,
   onUpdateTask,
   onDeleteTask
-}) => {
+}: TaskListProps) => {
+
   // Definerer kategorilisten
   const categories = [
     "Børn",
@@ -41,13 +40,17 @@ const TaskList: React.FC<TaskListProps> = ({
   ];
 
   // Gruppér opgaver efter kategori
-  const groupedTasks = tasks.reduce((groups: Record<string, Task[]>, task) => {
-    if (!groups[task.category]) {
-      groups[task.category] = [];
-    }
-    groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
-    return groups;
-  }, {});
+  const groupedTasks = tasks.reduce(
+    (groups: Record<string, Task[]>, task) => {
+      if (!groups[task.category]) {
+        groups[task.category] = [];
+      }
+      groups[task.category].push(task); // Her gemmer vi nu task med isChecked direkte på tasken
+      return groups;
+    },
+    {}
+  );
+
 
   // Funktion til at sortere opgaver, så de afkrydsede kommer nederst
   const sortTasksByChecked = (tasks: Task[]) => {
@@ -90,6 +93,8 @@ const TaskList: React.FC<TaskListProps> = ({
         </Tooltip>
       </div>
 
+  
+
       {/* Iterér over kategorilisten for at vise hver kategori som en sektion */}
       {categories.map((category) => (
         <div key={category} style={{ marginBottom: "16px" }}>
@@ -103,13 +108,10 @@ const TaskList: React.FC<TaskListProps> = ({
 
               {/* Vis opgaverne for hver kategori, sorter før visning */}
               {sortTasksByChecked(groupedTasks[category]).map((task, index) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  checked={checked[index]} // Sørg for at bruge den synkroniseret "checked" status
-                  onToggle={() => handleToggle(index)}
-                  onUpdateTask={onUpdateTask}
-                  onDeleteTask={onDeleteTask} // Passér sletningsfunktionen
+                <ListItem key={task.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                <Checkbox
+                  checked={checked[index]} // Bruger checked status fra arrayet
+                  onChange={() => handleToggle(index)} // Håndterer toggling af checkbox
                 />
               ))}
             </>

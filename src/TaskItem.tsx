@@ -42,7 +42,11 @@ interface TaskItemProps {
   onDeleteTask: (taskId: number) => void; // Funktion til at slette opgaven
 }
 
-const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
+const TaskItem = ({
+  task,
+  onUpdateTask,
+  onDeleteTask
+}: TaskItemProps) => {
   const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editedTask, setEditedTask] = useState(task); // Lokal kopi af opgaven til redigering
@@ -220,6 +224,36 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }: TaskItemProps) => {
             fullWidth
             margin="dense"
           />
+
+          {/* Dialog til bekræftelse af sletning */}
+          <Dialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog}>
+            <DialogTitle>Bekræft Sletning</DialogTitle>
+            <DialogContent>
+              <Typography>
+                Er du sikker på, at du vil slette opgaven{" "}
+                <strong>{task.taskName}</strong>?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleCloseDeleteDialog}
+                sx={{ color: themeColors.secondaryColor }}>
+                Nej
+              </Button>
+              <Button
+                onClick={() => {
+                  onDeleteTask(task.id); // Bruger onDeleteTask fra App.tsx
+                  handleCloseDeleteDialog(); // Luk dialogen
+                }}
+                variant="contained"
+                sx={{
+                  backgroundColor: themeColors.secondaryColor,
+                  color: "#fff"
+                }}>
+                Ja
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           {/* Dropdown til valg af kategori */}
           <FormControl fullWidth margin="dense" required>
