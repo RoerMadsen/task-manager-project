@@ -175,7 +175,7 @@ const TaskItem = ({
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between"
         }}>
         <Checkbox checked={checked} onChange={onToggle} />
